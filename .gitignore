@@ -1,33 +1,30 @@
-#We don't want the zip file in the repo
+# Build and release artifacts
 *.zip
 *.7z
-#Don't push temp files...
+*.tar.gz
+dist/
+build/
+releases/
 *.zip.tmp*
-#Don't push the bash script lock file.
-*.lock
-
-#Used for the "local history" plugin
-.history/
-
-## IntelliJ settings
-.idea/
-
-## Files for the upload scripts
-CHANGELOG.md
-response.txt
-
-#This is used for the atom build package, enables the build to happen on each save.
-.atom-build.yml
-
-#Used by the buildscript in batch
 *.temporary
 
-#Macos stuff
-*.DS_Store
+# Editor and IDE configurations
+.vscode/
+.idea/
+.history/
+*.suo
+*.user
 
-releases/
-*__pycache__/
+# Python tooling caches
+__pycache__/
+*.py[cod]
 
-#Log files
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and lockfiles
 *.log
 *.bak
+*.lock

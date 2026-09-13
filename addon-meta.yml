@@ -1,0 +1,19 @@
+id: "questie"
+title: "Questie"
+title-ru: "Questie"
+description: "A standalone Classic QuestHelper backported to 3.3.5a and adapted for WoW Sirus."
+description-ru: "Квестовый помощник для World of Warcraft 3.3.5a, адаптированный специально для WoW Sirus."
+author: "Aero, Dyaxler, widxwer, Darskiy"
+version: "9.5.1-sirus"
+category: "Quests"
+tags:
+  - "quest"
+  - "leveling"
+  - "tracker"
+  - "map"
+game-version: "3.3.5a"
+interface: 30300
+directories:
+  - "Questie-Sirus"
+dependencies: []
+conflicts: []
