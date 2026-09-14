@@ -465,7 +465,7 @@ function QuestieCompat.GetQuestLink(questId)
 end
 
 function QuestieCompat:GetQuestLinkString(questLevel, questName, questId)
-	return QuestieCompat.GetQuestLink(questId) or "[["..tostring(questLevel).."] "..questName.." ("..tostring(questId)..")]"
+	return QuestieCompat.GetQuestLink(questId) or "["..tostring(questName).."]"
 end
 
 function QuestieCompat:GetQuestLinkStringById(questId)
