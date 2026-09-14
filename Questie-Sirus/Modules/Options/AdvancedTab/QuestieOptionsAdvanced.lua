@@ -424,15 +424,7 @@ _GetLanguages = function()
     local languages = {
         ['auto'] = l10n('Automatic'),
         ['enUS'] = 'English',
-        ['esES'] = 'Español',
-        ['esMX'] = 'Español (América Latina)',
-        ['ptBR'] = 'Português',
-        ['frFR'] = 'Français',
-        ['deDE'] = 'Deutsch',
         ['ruRU'] = 'Русский',
-        ['zhCN'] = '简体中文',
-        ['zhTW'] = '正體中文',
-        ['koKR'] = '한국어',
     }
     if QUESTIE_LOCALES_OVERRIDE ~= nil then
         languages[QUESTIE_LOCALES_OVERRIDE.locale] = QUESTIE_LOCALES_OVERRIDE.localeName

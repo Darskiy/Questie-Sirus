@@ -19,15 +19,7 @@ local QuestieDB = QuestieLoader:ImportModule("QuestieDB")
 local locale = 'enUS'
 local supportedLocals = {
     ['enUS'] = true,
-    ['esES'] = true,
-    ['esMX'] = true,
-    ['ptBR'] = true,
-    ['frFR'] = true,
-    ['deDE'] = true,
     ['ruRU'] = true,
-    ['zhCN'] = true,
-    ['zhTW'] = true,
-    ['koKR'] = true,
 }
 
 function l10n:InitializeLocaleOverride()
@@ -155,16 +147,6 @@ function _l10n:GetFallbackLocale(lang)
 
     if supportedLocals[lang] then
         return lang
-    elseif lang == 'enGB' then
-        return 'enUS'
-    elseif lang == 'enCN' then
-        return 'zhCN'
-    elseif lang == 'enTW' then
-        return 'zhTW'
-    elseif lang == 'esMX' then
-        return 'esES'
-    elseif lang == 'ptPT' then
-        return 'ptBR'
     else
         return 'enUS'
     end
