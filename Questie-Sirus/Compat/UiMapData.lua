@@ -645,7 +645,8 @@ QuestieCompat.worldMapData = {
 
 
 function QuestieCompat.LoadUiMapData(expansionLevel)
-    if (expansionLevel or QuestieCompat.WOW_PROJECT_ID) < QuestieCompat.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then return end
+    local exp = (type(expansionLevel) == "number" and expansionLevel) or QuestieCompat.WOW_PROJECT_ID or QuestieCompat.WOW_PROJECT_WRATH_CLASSIC
+    if exp < QuestieCompat.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then return end
 
     local UiMapData =
     {

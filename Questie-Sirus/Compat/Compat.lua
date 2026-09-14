@@ -82,7 +82,7 @@ end)
 QuestieCompat.WOW_PROJECT_CLASSIC = 2
 QuestieCompat.WOW_PROJECT_BURNING_CRUSADE_CLASSIC = 5
 QuestieCompat.WOW_PROJECT_WRATH_CLASSIC = 11
-QuestieCompat.WOW_PROJECT_ID = tonumber(GetAddOnMetadata(QuestieCompat.addonName, "X-WOW_PROJECT_ID"))
+QuestieCompat.WOW_PROJECT_ID = tonumber(GetAddOnMetadata(QuestieCompat.addonName, "X-WOW_PROJECT_ID")) or QuestieCompat.WOW_PROJECT_WRATH_CLASSIC
 
 -- check for a specific type of group
 QuestieCompat.LE_PARTY_CATEGORY_HOME = 1 -- home-realm parties
@@ -1961,7 +1961,8 @@ function QuestieCompat:ADDON_LOADED(event, addon)
         QuestieDB.raceKeys.DRACTHYR = 67108864
     end
 
-    QuestieCompat.LoadUiMapData(Questie.db.profile.useWotlkMapData and QuestieCompat.WOW_PROJECT_WRATH_CLASSIC)
+    local mapExp = (Questie.db.profile.useWotlkMapData and QuestieCompat.WOW_PROJECT_WRATH_CLASSIC) or QuestieCompat.WOW_PROJECT_ID or QuestieCompat.WOW_PROJECT_WRATH_CLASSIC
+    QuestieCompat.LoadUiMapData(mapExp)
 
     for uiMapId, data in pairs(QuestieCompat.UiMapData) do
         mapIdToUiMapId[data.mapID] = uiMapId
