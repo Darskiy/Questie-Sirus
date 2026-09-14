@@ -2912,4 +2912,21 @@ globals = {
     "teardown",
     "spy",
     "mock",
+    -----------------------------------------------------> Minimap & FrameXML globals
+    "GetMinimapShape",
+    "MinimapRadiusAPI",
+    "WorldMapFrameTitle",
+    "QuestLogScrollFrameScrollBar",
+}
+
+files = {
+    ["Questie-Sirus/Compat/QuestReward.lua"] = {
+        ignore = {"311", "411", "412", "421"},
+    },
+    ["Questie-Sirus/Compat/QuestTag.lua"] = {
+        ignore = {"311", "411", "412", "421"},
+    },
+    ["Questie-Sirus/Compat/UiMapData.lua"] = {
+        ignore = {"311", "411", "412", "421"},
+    },
 }

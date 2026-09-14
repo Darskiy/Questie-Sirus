@@ -150,6 +150,8 @@ local minimapPinRegistry = {}
 local worldmapPins = {}
 local worldmapPinRegistry = {}
 
+local MAJOR = "HereBeDragons-Pins-2.0"
+
 local pins = {
     Minimap = Minimap,
     updateFrame = CreateFrame("Frame"),
@@ -482,11 +484,11 @@ local function HandleWorldMapPin(icon, data)
         if uiMapID ~= data.uiMapID then
             local mapType = HBD.mapData[uiMapID].mapType
             if not data.uiMapID then
-                if mapType == Enum.UIMapType.Continent and data.worldMapShowFlag >= HBD_PINS_WORLDMAP_SHOW_CONTINENT then
-                    --pass
-                elseif mapType ~= Enum.UIMapType.Zone and mapType ~= Enum.UIMapType.Dungeon and mapType ~= Enum.UIMapType.Micro then
-                    -- fail
-                    return
+                if not (mapType == Enum.UIMapType.Continent and data.worldMapShowFlag >= HBD_PINS_WORLDMAP_SHOW_CONTINENT) then
+                    if mapType ~= Enum.UIMapType.Zone and mapType ~= Enum.UIMapType.Dungeon and mapType ~= Enum.UIMapType.Micro then
+                        -- fail
+                        return
+                    end
                 end
             else
                 local show = true -- Questie fix to show icons in neighbour areas

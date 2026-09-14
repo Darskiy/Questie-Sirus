@@ -277,12 +277,12 @@ function QuestieCompat.GetCurrentPlayerPosition()
 		x, y = GetPlayerMapPosition("player");
 		if ( x <= 0 and y <= 0 ) then
 			-- attempt to zoom out once - logic copied from WorldMapZoomOutButton_OnClick()
-				if ( ZoomOut() ) then
-					-- do nothing
-				elseif ( GetCurrentMapZone() ~= WORLDMAP_WORLD_ID ) then
-					SetMapZoom(GetCurrentMapContinent());
-				else
-					SetMapZoom(WORLDMAP_WORLD_ID);
+				if not ZoomOut() then
+					if ( GetCurrentMapZone() ~= WORLDMAP_WORLD_ID ) then
+						SetMapZoom(GetCurrentMapContinent());
+					else
+						SetMapZoom(WORLDMAP_WORLD_ID);
+					end
 				end
 			x, y = GetPlayerMapPosition("player");
 			if ( x <= 0 and y <= 0 ) then
@@ -1876,11 +1876,11 @@ function QuestieCompat.RegisterCorrection(dbName, corrections)
     table.insert(correctionsRegistry[dbName], corrections)
 end
 
-function QuestieCompat.LoadCorrections(_LoadCorrections, validationTables)
+function QuestieCompat.LoadCorrections(loadCorrectionsFn, validationTables)
     for dbName in pairs(correctionsRegistry) do
         local dbKeysReversed = QuestieDB[dbName:sub(1, -5).."KeysReversed"]
         for i, corrections in ipairs(correctionsRegistry[dbName]) do
-            _LoadCorrections(dbName, corrections(), dbKeysReversed, validationTables)
+            loadCorrectionsFn(dbName, corrections(), dbKeysReversed, validationTables)
         end
     end
 end
