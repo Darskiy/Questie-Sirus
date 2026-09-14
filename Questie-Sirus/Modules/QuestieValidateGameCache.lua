@@ -124,7 +124,7 @@ local function OnQuestLogUpdate()
     if goodQuestsCount ~= numQuests then
         -- This shouldn't be possible
 
-        Questie:Error("Game Cache has still a broken quest log. Good quest: "..goodQuestsCount.."/"..numQuests..". Please report this on Github or Discord!") -- Translations might not be available yet.
+        Questie:Error("Game Cache has still a broken quest log. Good quest: "..goodQuestsCount.."/"..numQuests..". Please report this on GitHub!") -- Translations might not be available yet.
         -- TODO should we stop whole addon loading progress?
     end
 

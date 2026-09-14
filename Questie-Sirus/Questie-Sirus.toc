@@ -1,6 +1,6 @@
 ## Interface: 30300
 ## Title: |cFF00FF00Questie|r|cFFFFD100-Sirus|r |cFF808080[by Darskiy]|r
-## Author: Darskiy, widxwer, Questie Team
+## Author: Darskiy
 ## Notes: A standalone Classic QuestHelper backported to 335 and adapted for WoW Sirus by Darskiy.
 ## Notes-esMX: Ayundante de misión
 ## Notes-esES: Ayundante de misión
@@ -11,9 +11,6 @@
 ## OptionalDeps: Ace3, CallbackHandler-1.0, HereBeDragons, LibDataBroker-1.1, LibDBIcon-1.0, LibSharedMedia-3.0, LibStub, LibUIDropDownMenu
 ## SavedVariables: QuestieConfig
 ## SavedVariablesPerCharacter: QuestieConfigCharacter
-## X-Curse-Project-ID: 334372
-## X-Wago-ID: qv634BKb
-## X-WOW_PROJECT_ID: 11
 ## X-Sirus-Update: https://github.com/Darskiy/Questie-Sirus/tree/main/Questie-Sirus
 ## X-Sirus-Category: 13
 ## X-Website: https://github.com/Darskiy/Questie-Sirus

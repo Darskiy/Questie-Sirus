@@ -87,7 +87,6 @@ function MapIconTooltip:Show()
     end
 
     -- FIXME: `data` can be nil here which leads to an error, will have to debug:
-    -- https://discordapp.com/channels/263036731165638656/263040777658171392/627808795715960842
     -- happens when a note doesn't get removed after a quest has been finished, see #1170
     -- TODO: change how the logic works, so this [ObjectiveIndex?] can be nil
     -- it is nil on some notes like starters/finishers, because its for objectives. However, it needs to be an number here for duplicate checks

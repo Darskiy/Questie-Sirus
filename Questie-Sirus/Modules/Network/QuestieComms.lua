@@ -531,7 +531,7 @@ function _QuestieComms:BroadcastQuestLog(eventName, sendMode, targetPlayer) -- b
             if (not QuestieDB.QuestPointers[questId]) then
                 if not Questie._sessionWarnings[questId] then
                     if not (Questie.IsSoD or QuestieCompat.Is335) then
-                        Questie:Error(l10n("The quest %s is missing from Questie's database. Please report this on GitHub or Discord!", tostring(questId)))
+                        Questie:Error(l10n("The quest %s is missing from Questie's database. Please report this on GitHub!", tostring(questId)))
                     else
                         Questie:Debug(Questie.DEBUG_DEVELOP, "The quest %s is missing from Questie's database", tostring(questId))
                     end
@@ -652,7 +652,7 @@ function _QuestieComms:BroadcastQuestLogV2(eventName, sendMode, targetPlayer) --
             if (not QuestieDB.QuestPointers[questId]) then
                 if not Questie._sessionWarnings[questId] then
                     if not (Questie.IsSoD or QuestieCompat.Is335) then
-                        Questie:Error(l10n("The quest %s is missing from Questie's database. Please report this on GitHub or Discord!", tostring(questId)))
+                        Questie:Error(l10n("The quest %s is missing from Questie's database. Please report this on GitHub!", tostring(questId)))
                     else
                         Questie:Debug(Questie.DEBUG_DEVELOP, "The quest %s is missing from Questie's database", tostring(questId))
                     end

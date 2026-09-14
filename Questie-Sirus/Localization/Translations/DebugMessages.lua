@@ -374,17 +374,17 @@ local debugMessagesLocales = {
         ["esES"] = "¡Error durante la inicialización!",
         ["esMX"] = "¡Error durante la inicialización!",
     },
-    ["The quest %s is missing from Questie's database. Please report this on GitHub or Discord!"] = {
-        ["ptBR"] = "A missão %s está faltando no banco de dados da Questie. Por favor, informe isso no GitHub ou Discord!",
-        ["ruRU"] = "Задание %s отсутствует в БД Questie. Пожалуйста, сообщите нам об этом на GitHub или в Discord!",
-        ["koKR"] = "해당 퀘스트 %s 는 퀘스티 데이터베이스에서 찾을 수 없습니다. Github/Discord에 리포트 부탁드립니다!",
-        ["frFR"] = "La quête %s n'est pas présente dans la Base de données Questie. Veuillez le signaler sur GitHub ou Discord !",
-        ["zhCN"] = "Questie 数据库中缺少的任务 %s，请到 GitHub 或 Discord 上报告，谢谢!",
+    ["The quest %s is missing from Questie's database. Please report this on GitHub!"] = {
+        ["ptBR"] = "A missão %s está faltando no banco de dados da Questie. Por favor, informe isso no GitHub!",
+        ["ruRU"] = "Задание %s отсутствует в БД Questie. Пожалуйста, сообщите нам об этом на GitHub!",
+        ["koKR"] = "해당 퀘스트 %s 는 퀘스티 데이터베이스에서 찾을 수 없습니다. GitHub에 리포트 부탁드립니다!",
+        ["frFR"] = "La quête %s n'est pas présente dans la Base de données Questie. Veuillez le signaler sur GitHub !",
+        ["zhCN"] = "Questie 数据库中缺少的任务 %s，请到 GitHub 上报告，谢谢!",
         ["enUS"] = true,
-        ["zhTW"] = "Questie 的資料庫中沒有這個任務 %s，請到 GitHub 或 Discord 做回報!",
-        ["deDE"] = "Der Quest %s fehlt in Questie's Datenbank. Bitte melde dies auf GitHub oder Discord!",
-        ["esES"] = "Falta la misión %s en la base de datos de Questie. ¡Por favor, infórmalo en GitHub o Discord!",
-        ["esMX"] = "Falta la misión %s en la base de datos de Questie. ¡Por favor, infórmalo en GitHub o Discord!",
+        ["zhTW"] = "Questie 的資料庫中沒有這個任務 %s，請到 GitHub 做回報!",
+        ["deDE"] = "Der Quest %s fehlt in Questie's Datenbank. Bitte melde dies auf GitHub!",
+        ["esES"] = "Falta la misión %s en la base de datos de Questie. ¡Por favor, infórmalo en GitHub!",
+        ["esMX"] = "Falta la misión %s en la base de datos de Questie. ¡Por favor, infórmalo en GitHub!",
     },
     ["Coordinates addon is enabled and will cause buggy behavior. Disabling global map and mini map coordinates. These can be re-enabled in settings"] = {
         ["ptBR"] = "O addon de coordenadas está ativado e causará comportamento defeituoso. Desativando coordenadas do mapa global e do minimapa. Estas podem ser reativadas nas configurações.",
@@ -543,8 +543,8 @@ local debugMessagesLocales = {
         ["zhTW"] = "你剛才選為目標的 NPC 是 Questie 資料庫中所缺少的。",
         ["zhCN"] = false,
     },
-    ["Database mismatch! No entries found that match quest name. Please report this on GitHub or Discord!"] = {
-        ["ruRU"] = "Несоответствие БД! Запись задания не найдена по имени. Пожалуйста, сообщите об этом на GitHub или в Discord!",
+    ["Database mismatch! No entries found that match quest name. Please report this on GitHub!"] = {
+        ["ruRU"] = "Несоответствие БД! Запись задания не найдена по имени. Пожалуйста, сообщите об этом на GitHub!",
         ["enUS"] = true,
     },
     ["Queststarter is: "] = {

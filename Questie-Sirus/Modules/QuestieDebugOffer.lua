@@ -599,43 +599,34 @@ hooksecurefunc("SetItemRef", function(link)
 end);
 
 ---@param popupText string --@A string containing the lines of text to be displayed in the popup
----@param discordURL string --@A string containing the URL to the Questie Discord
+---@param reportURL string --@A string containing the URL to GitHub issues
 ---@param index number --@Integer containing the index of the DebugOffer in question
-local function _CreateOfferFrame(popupText, discordURL, index)
+local function _CreateOfferFrame(popupText, reportURL, index)
     if openDebugWindows[index] == true then
         Questie:Debug(Questie.DEBUG_DEVELOP, "[QuestieDebugOffer] - An offer is already open, not creating new frame")
         return
     end
-    local debugFrame = CreateFrame("Frame", "QuestieDebugOfferFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate")
-    debugFrame:SetPoint("CENTER")
-    debugFrame:SetMovable(true)
+    local debugFrame = CreateFrame("Frame", "QuestieDebugOfferFrame" .. index, UIParent)
+    debugFrame:SetSize(400, 400)
+    debugFrame:SetPoint("CENTER", 0, 50)
+    debugFrame:SetFrameStrata("TOOLTIP")
     debugFrame:EnableMouse(true)
+    debugFrame:SetMovable(true)
     debugFrame:RegisterForDrag("LeftButton")
     debugFrame:SetScript("OnDragStart", debugFrame.StartMoving)
     debugFrame:SetScript("OnDragStop", debugFrame.StopMovingOrSizing)
 
-    -- Dynamically set the height of the frame based on the number of lines of text
-    local numLines = 0
-    for _ in popupText:gmatch("\n") do
-        numLines = numLines + 1
-    end
-    debugFrame:SetSize(300, numLines * 30 + 20)
-
     debugFrame.title = debugFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    debugFrame.title:SetPoint("TOP", 0, -15)
-    debugFrame.title:SetText("|TInterface\\Addons\\Questie\\Icons\\startendstart.tga:16|t |cFFFED218" .. l10n("Questie Debug Info") .. "|r |TInterface\\Addons\\Questie\\Icons\\startendstart.tga:16|t")
+    debugFrame.title:SetPoint("TOP", debugFrame, "TOP", 0, -20)
+    debugFrame.title:SetText(Questie:Colorize(l10n("Questie Debug Offer"), "gold"))
 
-    -- Create a single large edit box with no background
-    debugFrame.dataEditBox = CreateFrame("EditBox", nil, debugFrame)
-    debugFrame.dataEditBox:SetText(popupText)
-    debugFrame.dataEditBox:SetFontObject(ChatFontNormal)
+    debugFrame.dataEditBox = CreateFrame("EditBox", nil, debugFrame, "InputBoxTemplate")
     debugFrame.dataEditBox:SetMultiLine(true)
+    debugFrame.dataEditBox:SetSize(340, 220)
     debugFrame.dataEditBox:SetPoint("TOP", debugFrame.title, "BOTTOM", 0, -10)
-    debugFrame.dataEditBox:SetJustifyH("CENTER")
-    debugFrame.dataEditBox:SetJustifyV("CENTER")
-    debugFrame.dataEditBox:SetSize(270, 1) -- Height of a multiline EditBox is automatically adjusted
-    debugFrame.dataEditBox:SetFocus()
-    debugFrame.dataEditBox:SetScript("OnCursorChanged", function(self)
+    debugFrame.dataEditBox:SetAutoFocus(false)
+    debugFrame.dataEditBox:SetText(popupText)
+    debugFrame.dataEditBox:SetScript("OnTextChanged", function(self)
         self:SetText(popupText)
         self:HighlightText()
     end)
@@ -644,19 +635,19 @@ local function _CreateOfferFrame(popupText, discordURL, index)
         openDebugWindows[index] = false;
     end)
 
-    debugFrame.discordText = debugFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    debugFrame.discordText:SetPoint("TOP", debugFrame.dataEditBox, "BOTTOM", 0, -15)
-    debugFrame.discordText:SetText("|cFFAAAAAA" .. l10n("Please share this info with us on") .. "  |TInterface\\Addons\\Questie\\Icons\\discord.blp:16|t |cFF5765ECDiscord|r\n" .. "(" .. l10n("You can copy the data above") .. ")")
+    debugFrame.githubText = debugFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    debugFrame.githubText:SetPoint("TOP", debugFrame.dataEditBox, "BOTTOM", 0, -15)
+    debugFrame.githubText:SetText("|cFFAAAAAA" .. l10n("Please share this info with us on") .. " |cFF00FF00GitHub|r\n" .. "(" .. l10n("You can copy the data above") .. ")")
 
-    debugFrame.discordLinkEditBox = CreateFrame("EditBox", nil, debugFrame, "InputBoxTemplate")
-    debugFrame.discordLinkEditBox:SetSize(200, 20)
-    debugFrame.discordLinkEditBox:SetPoint("TOP", debugFrame.discordText, "BOTTOM", 0, -10)
-    debugFrame.discordLinkEditBox:SetAutoFocus(false)
-    debugFrame.discordLinkEditBox:SetText(discordURL)
+    debugFrame.githubLinkEditBox = CreateFrame("EditBox", nil, debugFrame, "InputBoxTemplate")
+    debugFrame.githubLinkEditBox:SetSize(320, 20)
+    debugFrame.githubLinkEditBox:SetPoint("TOP", debugFrame.githubText, "BOTTOM", 0, -10)
+    debugFrame.githubLinkEditBox:SetAutoFocus(false)
+    debugFrame.githubLinkEditBox:SetText(reportURL)
 
     debugFrame.dismissButton = CreateFrame("Button", nil, debugFrame, "UIPanelButtonTemplate")
     debugFrame.dismissButton:SetSize(80, 22)
-    debugFrame.dismissButton:SetPoint("TOP", debugFrame.discordLinkEditBox, "BOTTOM", 0, -10)
+    debugFrame.dismissButton:SetPoint("TOP", debugFrame.githubLinkEditBox, "BOTTOM", 0, -10)
     debugFrame.dismissButton:SetText(l10n("Dismiss"))
     debugFrame.dismissButton:SetScript("OnClick", function()
         debugFrame:Hide();
@@ -678,10 +669,9 @@ end
 -- generates dialog based on link clicked
 ---@param link string
 function QuestieDebugOffer.ShowOffer(link)
-    -- We also have access to the questie.dev domain (purchased by Logon)
-    local discordURL = "https://discord.gg/Q6j4qByndw" -- redirect to #bug-redirect
+    local githubURL = "https://github.com/Darskiy/Questie-Sirus/issues"
     local i = tonumber(string.sub(link,21))
     local popupText = DebugInformation[i]
 
-    _CreateOfferFrame(popupText, discordURL, i)
+    _CreateOfferFrame(popupText, githubURL, i)
 end

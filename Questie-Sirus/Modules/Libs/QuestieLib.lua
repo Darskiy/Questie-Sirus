@@ -674,7 +674,7 @@ function QuestieLib:TextWrap(line, prefix, combineTrailing, desiredWidth)
         textWrapObjectiveFontString:Hide()
     end
 
-    if (textWrapObjectiveFontString:IsVisible()) then Questie:Error("TextWrap already running... Please report this on GitHub or Discord.") end
+    if (textWrapObjectiveFontString:IsVisible()) then Questie:Error("TextWrap already running... Please report this on GitHub.") end
 
     --Set Defaults
     combineTrailing = combineTrailing or true

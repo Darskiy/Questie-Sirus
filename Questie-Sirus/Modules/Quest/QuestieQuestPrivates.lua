@@ -80,7 +80,7 @@ monster = function(npcId, objective)
         Questie:Error(
             "Corrupted objective data handed to objectiveSpawnListCallTable['monster']:",
             "'" .. objective.Description .. "' -",
-            "Please report this error on Discord or GitHub."
+            "Please report this error on GitHub."
         )
         return nil
     end
@@ -129,7 +129,7 @@ object = function(objectId, objective)
         Questie:Error(
             "Corrupted objective data handed to objectiveSpawnListCallTable['object']:",
             "'" .. objective.Description .. "' -",
-            "Please report this error on Discord or GitHub."
+            "Please report this error on GitHub."
         )
         return nil
     end
@@ -198,7 +198,7 @@ item = function(itemId, objective)
         Questie:Error(
             "Corrupted objective data handed to objectiveSpawnListCallTable['item']:",
             "'" .. objective.Description .. "' -",
-            "Please report this error on Discord or GitHub."
+            "Please report this error on GitHub."
         )
         return nil
     end
@@ -279,7 +279,7 @@ spell = function(spellId, objective, objectiveData)
         Questie:Error(
             "Corrupted objective data handed to objectiveSpawnListCallTable['spell']:",
             "'" .. objective.Description .. "' -",
-            "Please report this error on Discord or GitHub."
+            "Please report this error on GitHub."
         )
         return nil
     end

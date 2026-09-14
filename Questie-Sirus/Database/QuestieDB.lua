@@ -1715,7 +1715,7 @@ function QuestieDB.GetQuestIDFromName(name, questgiverGUID, questStarter)
                     end
                 end
             elseif (not Questie.IsSoD) and (not QuestieCompat.Is335) then -- don't print these errors in SoD or on Sirus 3.3.5a, as we expect missing custom data; debug log handles these instead
-                Questie:Error(l10n("Database mismatch! No entries found that match quest name. Please report this on GitHub or Discord!"))
+                Questie:Error(l10n("Database mismatch! No entries found that match quest name. Please report this on GitHub!"))
                 Questie:Error(l10n("Queststarter is: ") .. unit_type .. " " .. tostring(questgiverID))
                 Questie:Error(l10n("Quest name is: ") .. tostring(name))
                 Questie:Error(l10n("Client info is: ") .. GetBuildInfo() .. "; " .. QuestieLib:GetAddonVersionString())
@@ -1730,7 +1730,7 @@ function QuestieDB.GetQuestIDFromName(name, questgiverGUID, questStarter)
                     end
                 end
             elseif (not Questie.IsSoD) and (not QuestieCompat.Is335) then -- don't print these errors in SoD or on Sirus 3.3.5a, as we expect missing custom data; debug log handles these instead
-                Questie:Error(l10n("Database mismatch! No entries found that match quest name. Please report this on GitHub or Discord!"))
+                Questie:Error(l10n("Database mismatch! No entries found that match quest name. Please report this on GitHub!"))
                 Questie:Error(l10n("Questender is: ") .. unit_type .. " " .. tostring(questgiverID))
                 Questie:Error(l10n("Quest name is: ") .. tostring(name))
                 Questie:Error(l10n("Client info is: ") .. GetBuildInfo() .. "; " .. QuestieLib:GetAddonVersionString())
