@@ -215,6 +215,10 @@ local debugMessagesLocales = {
         ["ruRU"] = "Некаталогизированное задание: %s (%s)",
         ["enUS"] = true,
     },
+    ["[Migration] Migrated Questie for v9.0. This will reset all Questie settings to default. Journey history has been preserved."] = {
+        ["ruRU"] = "[Миграция] Questie обновлен до v9.0. Настройки сброшены по умолчанию. История Путешествия сохранена.",
+        ["enUS"] = true,
+    },
     -- End Debug Offers
 }
 
