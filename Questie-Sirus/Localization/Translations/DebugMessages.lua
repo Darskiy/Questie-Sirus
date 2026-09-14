@@ -543,6 +543,26 @@ local debugMessagesLocales = {
         ["zhTW"] = "你剛才選為目標的 NPC 是 Questie 資料庫中所缺少的。",
         ["zhCN"] = false,
     },
+    ["Database mismatch! No entries found that match quest name. Please report this on GitHub or Discord!"] = {
+        ["ruRU"] = "Несоответствие БД! Запись задания не найдена по имени. Пожалуйста, сообщите об этом на GitHub или в Discord!",
+        ["enUS"] = true,
+    },
+    ["Queststarter is: "] = {
+        ["ruRU"] = "Задание дает: ",
+        ["enUS"] = true,
+    },
+    ["Questender is: "] = {
+        ["ruRU"] = "Задание завершает: ",
+        ["enUS"] = true,
+    },
+    ["Quest name is: "] = {
+        ["ruRU"] = "Название задания: ",
+        ["enUS"] = true,
+    },
+    ["Client info is: "] = {
+        ["ruRU"] = "Информация клиента: ",
+        ["enUS"] = true,
+    },
     -- End Debug Offers
 }
 

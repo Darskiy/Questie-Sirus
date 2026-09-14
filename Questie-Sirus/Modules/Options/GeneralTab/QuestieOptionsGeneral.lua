@@ -69,7 +69,7 @@ function QuestieOptions.tabs.general:Initialize()
                         order = 1.11,
                         name = function()
                             return Questie:Colorize("Questie-Sirus Edition", "gold") .. " (" .. QuestieLib:GetAddonVersionString() .. ")\n"
-                                .. Questie:Colorize("Maintained by Darskiy", "green") .. "\n"
+                                .. Questie:Colorize(l10n("Maintained by Darskiy"), "green") .. "\n"
                                 .. Questie:Colorize("https://github.com/Darskiy/Questie-Sirus", "gray") .. "\n"
                         end,
                     },

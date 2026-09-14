@@ -602,6 +602,90 @@ local generalOptionsLocales = {
         ["esES"] = "Habilitar tooltips del mundo",
         ["frFR"] = "Activer les infobulles mondiales",
     },
+    ["Sirus Options"] = {
+        ["ruRU"] = "Настройки Sirus",
+        ["enUS"] = true,
+    },
+    ["Maintained by Darskiy"] = {
+        ["ruRU"] = "Поддерживается Darskiy",
+        ["enUS"] = true,
+    },
+    ["Show quests for all races"] = {
+        ["ruRU"] = "Показывать задания для всех рас",
+        ["enUS"] = true,
+    },
+    ["Disable race requirement filtering, showing all available quests regardless of race."] = {
+        ["ruRU"] = "Отключает фильтрацию по расе, отображая все доступные задания независимо от расы персонажа.",
+        ["enUS"] = true,
+    },
+    ["Enable custom race override"] = {
+        ["ruRU"] = "Включить подмену расы",
+        ["enUS"] = true,
+    },
+    ["Enable overriding custom race to one of standard races."] = {
+        ["ruRU"] = "Позволяет сопоставить кастомную расу с одной из стандартных рас.",
+        ["enUS"] = true,
+    },
+    ["Mapping race"] = {
+        ["ruRU"] = "Сопоставление расы",
+        ["enUS"] = true,
+    },
+    ["Questie will use this race instead of the custom race for this character."] = {
+        ["ruRU"] = "Questie будет использовать эту расу вместо кастомной для данного персонажа.",
+        ["enUS"] = true,
+    },
+    ["After changing race you should reload UI."] = {
+        ["ruRU"] = "После смены расы необходимо перезагрузить интерфейс.",
+        ["enUS"] = true,
+    },
+    ["Human (Alliance)"] = {
+        ["ruRU"] = "Человек (Альянс)",
+        ["enUS"] = true,
+    },
+    ["Dwarf (Alliance)"] = {
+        ["ruRU"] = "Дворф (Альянс)",
+        ["enUS"] = true,
+    },
+    ["Night Elf (Alliance)"] = {
+        ["ruRU"] = "Ночной эльф (Альянс)",
+        ["enUS"] = true,
+    },
+    ["Gnome (Alliance)"] = {
+        ["ruRU"] = "Гном (Альянс)",
+        ["enUS"] = true,
+    },
+    ["Draenei (Alliance)"] = {
+        ["ruRU"] = "Дреней (Альянс)",
+        ["enUS"] = true,
+    },
+    ["Worgen (Alliance)"] = {
+        ["ruRU"] = "Ворген (Альянс)",
+        ["enUS"] = true,
+    },
+    ["Orc (Horde)"] = {
+        ["ruRU"] = "Орк (Орда)",
+        ["enUS"] = true,
+    },
+    ["Undead (Horde)"] = {
+        ["ruRU"] = "Нежить (Орда)",
+        ["enUS"] = true,
+    },
+    ["Tauren (Horde)"] = {
+        ["ruRU"] = "Таурен (Орда)",
+        ["enUS"] = true,
+    },
+    ["Troll (Horde)"] = {
+        ["ruRU"] = "Тролль (Орда)",
+        ["enUS"] = true,
+    },
+    ["Goblin (Horde)"] = {
+        ["ruRU"] = "Гоблин (Орда)",
+        ["enUS"] = true,
+    },
+    ["Blood Elf (Horde)"] = {
+        ["ruRU"] = "Эльф крови (Орда)",
+        ["enUS"] = true,
+    },
 }
 
 for k, v in pairs(generalOptionsLocales) do
