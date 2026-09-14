@@ -1766,3 +1766,112 @@ function QuestieCompat.LoadUiMapData(expansionLevel)
     QuestieCompat.worldMapData[1] = { 47908.72, 31935.28, 8552.61, 18467.83 }
     QuestieCompat.worldMapData[571] = { 47662.7, 31772.19, 25198.53, 11072.07 }
 end
+
+-- Sirus Custom Map Bounds (WorldMapArea.dbc)
+QuestieCompat.UiMapData[10009] = {
+    [1] = 2325.89,
+    [2] = 1860.19,
+    [3] = 3597.52,
+    [4] = 3599.05,
+    ["mapType"] = 3,
+    ["parentMapID"] = 0,
+    ["mapID"] = 10009,
+    ["instance"] = 0,
+    ["name"] = "TolGarod",
+}
+
+QuestieCompat.UiMapData[838] = {
+    [1] = 585.00,
+    [2] = 390.00,
+    [3] = 1617.50,
+    [4] = 515.00,
+    ["mapType"] = 4,
+    ["parentMapID"] = 10009,
+    ["mapID"] = 838,
+    ["instance"] = 838,
+    ["name"] = "TolGarodJail",
+}
+
+QuestieCompat.UiMapData[908] = {
+    [1] = 2399.85,
+    [2] = 1599.90,
+    [3] = 2933.15,
+    [4] = 533.30,
+    ["mapType"] = 3,
+    ["parentMapID"] = 1421,
+    ["mapID"] = 908,
+    ["instance"] = 0,
+    ["name"] = "GilneasSilverpineForest",
+}
+
+QuestieCompat.UiMapData[955] = {
+    [1] = 1759.89,
+    [2] = 1173.26,
+    [3] = 2293.19,
+    [4] = -746.62,
+    ["mapType"] = 3,
+    ["parentMapID"] = 10003,
+    ["mapID"] = 955,
+    ["instance"] = 0,
+    ["name"] = "GilneasCity",
+}
+
+QuestieCompat.UiMapData[10003] = {
+    [1] = 4799.90,
+    [2] = 3199.80,
+    [3] = 4266.60,
+    [4] = 533.30,
+    ["mapType"] = 3,
+    ["parentMapID"] = 0,
+    ["mapID"] = 10003,
+    ["instance"] = 0,
+    ["name"] = "Gilneas",
+}
+
+QuestieCompat.UiMapData[10000] = {
+    [1] = 4399.72,
+    [2] = 2933.15,
+    [3] = 5866.00,
+    [4] = 2399.35,
+    ["mapType"] = 3,
+    ["parentMapID"] = 0,
+    ["mapID"] = 10000,
+    ["instance"] = 1,
+    ["name"] = "LostIsland",
+}
+
+QuestieCompat.UiMapData[10012] = {
+    [1] = 1123.32,
+    [2] = 4266.40,
+    [3] = 2394.95,
+    [4] = 1328.35,
+    ["mapType"] = 3,
+    ["parentMapID"] = 0,
+    ["mapID"] = 10012,
+    ["instance"] = 0,
+    ["name"] = "TelAbim",
+}
+
+QuestieCompat.UiMapData[10010] = {
+    [1] = 5333.00,
+    [2] = 3551.78,
+    [3] = 2133.20,
+    [4] = 6218.28,
+    ["mapType"] = 3,
+    ["parentMapID"] = 0,
+    ["mapID"] = 10010,
+    ["instance"] = 0,
+    ["name"] = "Norderon",
+}
+
+QuestieCompat.UiMapData[2175] = {
+    [1] = 3381.25,
+    [2] = 2254.16,
+    [3] = -518.75,
+    [4] = 1433.33,
+    ["mapType"] = 3,
+    ["parentMapID"] = 0,
+    ["mapID"] = 2175,
+    ["instance"] = 0,
+    ["name"] = "ExilesReach",
+}

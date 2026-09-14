@@ -1863,6 +1863,46 @@ function QuestieCompat:ADDON_LOADED(event, addon)
     QuestieStream._readByte = QuestieCompat._readByte
     QuestieStream.Save = QuestieCompat.Save
     ZoneDB.private.RunTests = QuestieCompat.NOOP
+    if ZoneDB and ZoneDB.private then
+        if ZoneDB.private.areaIdToUiMapId then
+            ZoneDB.private.areaIdToUiMapId[10262] = 10009
+            ZoneDB.private.areaIdToUiMapId[10402] = 838
+            ZoneDB.private.areaIdToUiMapId[10100] = 955
+            ZoneDB.private.areaIdToUiMapId[10500] = 10003
+            ZoneDB.private.areaIdToUiMapId[10101] = 908
+            ZoneDB.private.areaIdToUiMapId[10000] = 10000
+            ZoneDB.private.areaIdToUiMapId[10299] = 10012
+            ZoneDB.private.areaIdToUiMapId[10278] = 10010
+            ZoneDB.private.areaIdToUiMapId[10279] = 10010
+            ZoneDB.private.areaIdToUiMapId[50534] = 10010
+            ZoneDB.private.areaIdToUiMapId[50424] = 2175
+        end
+        if ZoneDB.private.uiMapIdToAreaId then
+            ZoneDB.private.uiMapIdToAreaId[10009] = 10262
+            ZoneDB.private.uiMapIdToAreaId[838] = 10402
+            ZoneDB.private.uiMapIdToAreaId[908] = 10101
+            ZoneDB.private.uiMapIdToAreaId[955] = 10100
+            ZoneDB.private.uiMapIdToAreaId[10003] = 10500
+            ZoneDB.private.uiMapIdToAreaId[10000] = 10000
+            ZoneDB.private.uiMapIdToAreaId[10012] = 10299
+            ZoneDB.private.uiMapIdToAreaId[10010] = 10278
+            ZoneDB.private.uiMapIdToAreaId[2175] = 50424
+        end
+    end
+    local l10nModule = QuestieLoader:ImportModule("l10n")
+    if l10nModule and l10nModule.zoneLookup and l10nModule.zoneLookup[0] then
+        l10nModule.zoneLookup[0][10100] = l10nModule.zoneLookup[0][10100] or "Gilneas"
+        l10nModule.zoneLookup[0][10500] = l10nModule.zoneLookup[0][10500] or "Gilneas"
+        l10nModule.zoneLookup[0][10101] = l10nModule.zoneLookup[0][10101] or "Silverpine Forest"
+        l10nModule.zoneLookup[0][10262] = l10nModule.zoneLookup[0][10262] or "Tol'Garod"
+        l10nModule.zoneLookup[0][10402] = l10nModule.zoneLookup[0][10402] or "Tol'Garod Prison"
+        l10nModule.zoneLookup[0][10000] = l10nModule.zoneLookup[0][10000] or "Lost Island"
+        l10nModule.zoneLookup[0][10299] = l10nModule.zoneLookup[0][10299] or "Tel'Abim"
+        l10nModule.zoneLookup[0][10278] = l10nModule.zoneLookup[0][10278] or "Norderon"
+        l10nModule.zoneLookup[0][10279] = l10nModule.zoneLookup[0][10279] or "Norderon"
+        l10nModule.zoneLookup[0][50534] = l10nModule.zoneLookup[0][50534] or "Norderon"
+        l10nModule.zoneLookup[0][50424] = l10nModule.zoneLookup[0][50424] or "Exile's Reach"
+    end
     QuestieLib.TextWrap = QuestieCompat.TextWrap
     QuestieCoords.GetPlayerMapPosition = QuestieCompat.GetPlayerMapPosition
     QuestieCoords.ResetMiniWorldMapText = QuestieCompat.NOOP
