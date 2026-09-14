@@ -1,6 +1,6 @@
 # Questie: Sirus Edition
 
-WoW Sirus adaptation of Questie for 3.3.5a, maintained by [Darskiy](https://github.com/Darskiy/Questie-Sirus).
+WoW Sirus adaptation of [Questie](https://github.com/Questie/Questie), based on [widxwer's 3.3.5a backport](https://github.com/widxwer/Questie), maintained by [Darskiy](https://github.com/Darskiy/Questie-Sirus).
 
 ## Sirus Compatibility & Features
 
