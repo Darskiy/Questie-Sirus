@@ -1196,11 +1196,67 @@ local function isNamePlate(frame)
     return false
 end
 
+local function getNameRegion(frame)
+    if not frame then return nil end
+
+    -- Check known third-party addon fields (ElvUI, Kui, TidyPlates, Aloft)
+    if frame.UnitFrame and frame.UnitFrame.Name and frame.UnitFrame.Name.GetText then
+        return frame.UnitFrame.Name
+    end
+    if frame.kui and frame.kui.Name and frame.kui.Name.GetText then
+        return frame.kui.Name
+    end
+    if frame.extended then
+        if frame.extended.name and frame.extended.name.GetText then
+            return frame.extended.name
+        elseif frame.extended.visual and frame.extended.visual.name and frame.extended.visual.name.GetText then
+            return frame.extended.visual.name
+        end
+    end
+    if frame.aloftData and frame.aloftData.nameTextRegion and frame.aloftData.nameTextRegion.GetText then
+        return frame.aloftData.nameTextRegion
+    end
+    if frame.name and type(frame.name) == "table" and frame.name.GetText then
+        return frame.name
+    end
+
+    -- Scan regions for a valid FontString
+    local regions = { frame:GetRegions() }
+    for i = 1, #regions do
+        local region = regions[i]
+        if region and region.GetObjectType and region:GetObjectType() == "FontString" and region.GetText then
+            return region
+        end
+    end
+
+    -- Scan direct child frames if no FontString in direct regions
+    local children = { frame:GetChildren() }
+    for i = 1, #children do
+        local child = children[i]
+        if child and child.GetRegions then
+            local childRegions = { child:GetRegions() }
+            for j = 1, #childRegions do
+                local r = childRegions[j]
+                if r and r.GetObjectType and r:GetObjectType() == "FontString" and r.GetText then
+                    return r
+                end
+            end
+        end
+    end
+
+    local fallback = select(7, frame:GetRegions())
+    if fallback and fallback.GetText then
+        return fallback
+    end
+
+    return nil
+end
+
 local function scanWorldFrameChildren(frame, ...)
 	if not frame then return end
 
 	if not npFrames[frame] and isNamePlate(frame) then
-        npFrames[frame] = select(7, frame:GetRegions())
+        npFrames[frame] = getNameRegion(frame)
 
         frame:HookScript("OnShow", QuestieCompat.NameplateCreated)
         frame:HookScript("OnHide", _QuestieNameplate.RemoveFrame)
@@ -1213,7 +1269,10 @@ local function scanWorldFrameChildren(frame, ...)
 end
 
 function QuestieCompat.NameplateCreated(frame)
-    local name = npFrames[frame]:GetText()
+    local nameRegion = npFrames[frame] or getNameRegion(frame)
+    npFrames[frame] = nameRegion
+    local name = nameRegion and nameRegion.GetText and nameRegion:GetText()
+    if not name then return end
     local key = npActiveQuestNPCs[name]
     if key then
         local icon = _QuestieNameplate.GetValidIcon(QuestieTooltips.lookupByKey[key])
@@ -1229,10 +1288,12 @@ end
 
 function QuestieCompat.UpdateNameplate()
     for frame in pairs(npFrames) do
-        local name = npFrames[frame]:GetText()
-        local key = npActiveQuestNPCs[name]
+        local nameRegion = npFrames[frame] or getNameRegion(frame)
+        npFrames[frame] = nameRegion
+        local name = nameRegion and nameRegion.GetText and nameRegion:GetText()
+        local key = name and npActiveQuestNPCs[name]
 
-        local icon = _QuestieNameplate.GetValidIcon(QuestieTooltips.lookupByKey[key])
+        local icon = key and _QuestieNameplate.GetValidIcon(QuestieTooltips.lookupByKey[key])
 
         if icon then
             local f = _QuestieNameplate.GetFrame(frame)

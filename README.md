@@ -6,6 +6,7 @@ WoW Sirus adaptation of [Questie](https://github.com/Questie/Questie), based on 
 
 - **Dragonflight UI Support**: Seamless cascading integration with Sirus's backported `ObjectiveTrackerFrame` and legacy watch frames.
 - **Strict Chat Link Validation**: Compliant with server-side `ChatStrictLinkChecking >= 1` (standard quest links that never drop in chat).
+- **Custom Nameplates**: Defensive FontString resolution across ElvUI, Kui_Nameplates, TidyPlates, and Aloft.
 
 ## Installation
 
