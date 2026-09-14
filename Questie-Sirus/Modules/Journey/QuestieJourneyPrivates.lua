@@ -50,7 +50,7 @@ function _QuestieJourney:CreateObjectiveText(desc)
             objText = objText .. tostring(desc) .. "\n"
         end
     else
-        objText = Questie:Colorize(l10n('This quest is an automatic completion quest and does not contain an objective.'), 'yellow')
+        objText = Questie:Colorize(l10n('This quest is an automatic completion quest and does not contain an objective.'), Questie.COLORS.YELLOW)
     end
 
     return objText

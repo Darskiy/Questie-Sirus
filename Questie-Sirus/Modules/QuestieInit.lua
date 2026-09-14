@@ -89,27 +89,27 @@ local C_Timer = QuestieCompat.C_Timer
 local coYield = coroutine.yield
 
 local function loadFullDatabase()
-    print("\124cFF4DDBFF [1/9] " .. l10n("Loading database") .. "...")
+    Questie:Print(Questie:Colorize("[1/9] " .. l10n("Loading database") .. "...", Questie.COLORS.CYAN))
 
     QuestieInit:LoadBaseDB()
 
-    print("\124cFF4DDBFF [2/9] " .. l10n("Applying database corrections") .. "...")
+    Questie:Print(Questie:Colorize("[2/9] " .. l10n("Applying database corrections") .. "...", Questie.COLORS.CYAN))
 
     coYield()
     QuestieCorrections:Initialize()
 
-    print("\124cFF4DDBFF [3/9] " .. l10n("Initializing townfolks") .. "...")
+    Questie:Print(Questie:Colorize("[3/9] " .. l10n("Initializing townfolks") .. "...", Questie.COLORS.CYAN))
     coYield()
     Townsfolk.Initialize()
 
-    print("\124cFF4DDBFF [4/9] " .. l10n("Initializing locale") .. "...")
+    Questie:Print(Questie:Colorize("[4/9] " .. l10n("Initializing locale") .. "...", Questie.COLORS.CYAN))
     coYield()
     l10n:Initialize()
 
     coYield()
     QuestieDB.private:DeleteGatheringNodes()
 
-    print("\124cFF4DDBFF [5/9] " .. l10n("Optimizing waypoints") .. "...")
+    Questie:Print(Questie:Colorize("[5/9] " .. l10n("Optimizing waypoints") .. "...", Questie.COLORS.CYAN))
     coYield()
     QuestieCorrections:PreCompile()
 end
@@ -123,16 +123,16 @@ local function runValidator()
     -- Run validator
     if Questie.db.profile.debugEnabled then
         coYield()
-        print("Validating NPCs...")
+        Questie:Debug(Questie.DEBUG_DEVELOP, "Validating NPCs...")
         QuestieDBCompiler:ValidateNPCs()
         coYield()
-        print("Validating objects...")
+        Questie:Debug(Questie.DEBUG_DEVELOP, "Validating objects...")
         QuestieDBCompiler:ValidateObjects()
         coYield()
-        print("Validating items...")
+        Questie:Debug(Questie.DEBUG_DEVELOP, "Validating items...")
         QuestieDBCompiler:ValidateItems()
         coYield()
-        print("Validating quests...")
+        Questie:Debug(Questie.DEBUG_DEVELOP, "Validating quests...")
         QuestieDBCompiler:ValidateQuests()
     end
 end
@@ -205,7 +205,8 @@ QuestieInit.Stages[1] = function() -- run as a coroutine
 
     -- Check if the DB needs to be recompiled
     if (not dbIsCompiled) or (QuestieLib:GetAddonVersionString() ~= dbCompiledOnVersion) or (l10n:GetUILocale() ~= dbCompiledLang) or (Questie.db.global.dbCompiledExpansion ~= WOW_PROJECT_ID) then
-        print("\124cFFAAEEFF" .. l10n("Questie DB has updated!") .. "\124r\124cFFFF6F22 " .. l10n("Data is being processed, this may take a few moments and cause some lag..."))
+        Questie:Print(Questie:Colorize(l10n("Database is updating..."), Questie.COLORS.CYAN))
+        Questie:Warning(l10n("Data processing may cause temporary stuttering."))
         loadFullDatabase()
         QuestieDBCompiler:Compile()
         dbCompiled = true
@@ -233,9 +234,9 @@ QuestieInit.Stages[1] = function() -- run as a coroutine
     if Questie.db.profile.debugEnabled and dbCompiled then
         if Questie.db.profile.skipValidation ~= true then
             runValidator()
-            print("\124cFF4DDBFF Load and Validation complete.")
+            Questie:Debug(Questie.DEBUG_DEVELOP, "Load and Validation complete.")
         else
-            print("\124cFF4DDBFF Validation skipped, load complete.")
+            Questie:Debug(Questie.DEBUG_DEVELOP, "Validation skipped, load complete.")
         end
     end
 
@@ -316,9 +317,9 @@ QuestieInit.Stages[3] = function() -- run as a coroutine
     if Questie.db.profile.showAQWarEffortQuests and ((not Questie.db.profile.aqWarningPrintDate) or (Questie.db.profile.aqWarningPrintDate < dateToday)) then
         Questie.db.profile.aqWarningPrintDate = dateToday
         C_Timer.After(2, function()
-            print("|cffff0000-----------------------------|r")
-            Questie:Print("|cffff0000The AQ War Effort quests are shown for you. If your server is done you can hide those quests in the General settings of Questie!|r");
-            print("|cffff0000-----------------------------|r")
+            Questie:Print(Questie:Colorize("-----------------------------", Questie.COLORS.RED))
+            Questie:Print(Questie:Colorize(l10n("The AQ War Effort quests are shown for you. If your server is done you can hide those quests in the General settings of Questie!"), Questie.COLORS.RED))
+            Questie:Print(Questie:Colorize("-----------------------------", Questie.COLORS.RED))
         end)
     end
 

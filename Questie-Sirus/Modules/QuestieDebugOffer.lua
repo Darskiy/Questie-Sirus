@@ -618,7 +618,7 @@ local function _CreateOfferFrame(popupText, reportURL, index)
 
     debugFrame.title = debugFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     debugFrame.title:SetPoint("TOP", debugFrame, "TOP", 0, -20)
-    debugFrame.title:SetText(Questie:Colorize(l10n("Questie Debug Offer"), "gold"))
+    debugFrame.title:SetText(Questie:Colorize(l10n("Questie Debug Offer"), Questie.COLORS.GOLD))
 
     debugFrame.dataEditBox = CreateFrame("EditBox", nil, debugFrame, "InputBoxTemplate")
     debugFrame.dataEditBox:SetMultiLine(true)

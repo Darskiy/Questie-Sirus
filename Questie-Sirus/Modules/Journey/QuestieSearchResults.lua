@@ -40,7 +40,7 @@ local BY_ID = 2
 
 local function AddParagraph(frame, lookupObject, secondKey, header, query)
     if lookupObject[secondKey] then
-        QuestieJourneyUtils:AddLine(frame,  Questie:Colorize(header, "yellow"))
+        QuestieJourneyUtils:AddLine(frame,  Questie:Colorize(header, Questie.COLORS.YELLOW))
         for _,id in pairs(lookupObject[secondKey]) do
             local name = query(id, "name")
             if name then
@@ -58,7 +58,7 @@ end
 ---@param query function The function used to get link name from
 local function AddLinkedParagraph(frame, linkType, lookupObject, header, query)
     if lookupObject and #lookupObject > 0 then
-        QuestieJourneyUtils:AddLine(frame,  Questie:Colorize(header, "yellow"))
+        QuestieJourneyUtils:AddLine(frame,  Questie:Colorize(header, Questie.COLORS.YELLOW))
         for _,id in pairs(lookupObject) do
             -- QuestieJourneyUtils:AddLine(frame, lookupDB[id][lookupKey].." ("..id..")")
             local link = AceGUI:Create("InteractiveLabel")
@@ -133,9 +133,9 @@ local function rec(theTable, ret, indent)
 end
 
 local function recurseTable(theTable, theKeys)
-    local ret = Questie:Colorize('Raw data (shown because debug is enabled):\n\n', 'red')
+    local ret = Questie:Colorize('Raw data (shown because debug is enabled):\n\n', Questie.COLORS.RED)
     for key, _ in pairs(theKeys) do
-        ret = ret..Questie:Colorize(key, 'yellow')..': '
+        ret = ret..Questie:Colorize(key, Questie.COLORS.YELLOW)..': '
         local t = type(theTable[key])
         if t == 'nil' then
             ret = ret..'nil'
@@ -216,19 +216,19 @@ function QuestieSearchResults:QuestDetailsFrame(details, id)
     details:AddChild(hiddenQuests)
 
     -- general info
-    QuestieJourneyUtils:AddLine(details, Questie:Colorize(l10n("Quest ID"), "yellow") .. ": " .. id)
-    QuestieJourneyUtils:AddLine(details,  Questie:Colorize(l10n("Quest Level"), "yellow") .. ": " .. questLevel)
-    QuestieJourneyUtils:AddLine(details,  Questie:Colorize(l10n("Required Level"), "yellow") .. ": " .. requiredLevel)
+    QuestieJourneyUtils:AddLine(details, Questie:Colorize(l10n("Quest ID"), Questie.COLORS.YELLOW) .. ": " .. id)
+    QuestieJourneyUtils:AddLine(details,  Questie:Colorize(l10n("Quest Level"), Questie.COLORS.YELLOW) .. ": " .. questLevel)
+    QuestieJourneyUtils:AddLine(details,  Questie:Colorize(l10n("Required Level"), Questie.COLORS.YELLOW) .. ": " .. requiredLevel)
     local reqRaces = QuestieLib:GetRaceString(requiredRaces)
     if (reqRaces ~= "") then
-        QuestieJourneyUtils:AddLine(details, Questie:Colorize(l10n("Required Race"), "yellow") .. ": " .. reqRaces)
+        QuestieJourneyUtils:AddLine(details, Questie:Colorize(l10n("Required Race"), Questie.COLORS.YELLOW) .. ": " .. reqRaces)
     end
-    QuestieJourneyUtils:AddLine(details, Questie:Colorize(l10n("Doable"), "yellow") .. ": " .. tostring(QuestieDB.IsDoableVerbose(id, false, true, true)))
+    QuestieJourneyUtils:AddLine(details, Questie:Colorize(l10n("Doable"), Questie.COLORS.YELLOW) .. ": " .. tostring(QuestieDB.IsDoableVerbose(id, false, true, true)))
 
     -- objectives text
     if objectivesText then
         QuestieJourneyUtils:AddLine(details, "")
-        QuestieJourneyUtils:AddLine(details,  Questie:Colorize(l10n("Objectives"), "yellow") .. ":")
+        QuestieJourneyUtils:AddLine(details,  Questie:Colorize(l10n("Objectives"), Questie.COLORS.YELLOW) .. ":")
         for _, v in pairs(objectivesText) do
             QuestieJourneyUtils:AddLine(details, v)
         end
@@ -599,7 +599,7 @@ function QuestieSearchResults:DrawResultTab(container, resultType)
         if name then
             local complete = ''
             if Questie.db.char.complete[k] and resultType == "quest" then
-                complete = Questie:Colorize("(" .. l10n("Complete") .. ")" , "green")
+                complete = Questie:Colorize("(" .. l10n("Complete") .. ")" , Questie.COLORS.GREEN)
             end
             -- TODO rename option to "enabledIDs" or create separate ones for npcs/objects/items
             local id = ''
@@ -726,7 +726,7 @@ function QuestieSearchResults:DrawSearchResultTab(searchGroup, searchType, query
         end
         if (resultCountTotal == 0) then
             local noresults = AceGUI:Create("Label");
-            noresults:SetText(Questie:Colorize(l10n('No Match for Search Results: %s', query), 'yellow'));
+            noresults:SetText(Questie:Colorize(l10n('No Match for Search Results: %s', query), Questie.COLORS.YELLOW));
             noresults:SetFullWidth(true);
             searchGroup:AddChild(noresults);
             return;

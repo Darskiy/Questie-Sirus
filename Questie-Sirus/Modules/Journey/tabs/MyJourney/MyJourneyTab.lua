@@ -42,28 +42,28 @@ function _QuestieJourney.myJourney:DrawTab(container)
         local day = CALENDAR_WEEKDAY_NAMES[tonumber(date('%w', Questie.db.char.journey[i].Timestamp)) + 1];
         local month = CALENDAR_FULLDATE_MONTH_NAMES[tonumber(date('%m', Questie.db.char.journey[i].Timestamp))];
 
-        local timestamp = Questie:Colorize(date( '[ '..day ..', '.. month ..' %d @ %H:%M ]  ' , Questie.db.char.journey[i].Timestamp), 'blue');
+        local timestamp = Questie:Colorize(date( '[ '..day ..', '.. month ..' %d @ %H:%M ]  ' , Questie.db.char.journey[i].Timestamp), Questie.COLORS.BLUE);
 
         -- if it's a quest event
         if Questie.db.char.journey[i].Event == "Quest" then
             local qName = QuestieDB.QueryQuestSingle(Questie.db.char.journey[i].Quest, "name");
             if qName then
-                qName = Questie:Colorize(qName, 'gray');
+                qName = Questie:Colorize(qName, Questie.COLORS.GRAY);
 
                 if Questie.db.char.journey[i].SubType == "Accept" then
-                    recentEvents[i]:SetText(timestamp .. Questie:Colorize(l10n('You Accepted the quest %s', qName), 'yellow'));
+                    recentEvents[i]:SetText(timestamp .. Questie:Colorize(l10n('You Accepted the quest %s', qName), Questie.COLORS.YELLOW));
                 elseif Questie.db.char.journey[i].SubType == "Abandon" then
-                    recentEvents[i]:SetText(timestamp .. Questie:Colorize(l10n('You Abandoned the quest %s', qName), 'yellow'));
+                    recentEvents[i]:SetText(timestamp .. Questie:Colorize(l10n('You Abandoned the quest %s', qName), Questie.COLORS.YELLOW));
                 elseif Questie.db.char.journey[i].SubType == "Complete" then
-                    recentEvents[i]:SetText(timestamp .. Questie:Colorize(l10n('You Completed the quest %s', qName), 'yellow'));
+                    recentEvents[i]:SetText(timestamp .. Questie:Colorize(l10n('You Completed the quest %s', qName), Questie.COLORS.YELLOW));
                 end
             end
         elseif Questie.db.char.journey[i].Event == "Level" then
-            local level = Questie:Colorize(l10n('Level %s', Questie.db.char.journey[i].NewLevel), 'gray');
-            recentEvents[i]:SetText(timestamp .. Questie:Colorize(l10n('Congratulations! You reached %s !', level), 'yellow'));
+            local level = Questie:Colorize(l10n('Level %s', Questie.db.char.journey[i].NewLevel), Questie.COLORS.GRAY);
+            recentEvents[i]:SetText(timestamp .. Questie:Colorize(l10n('Congratulations! You reached %s !', level), Questie.COLORS.YELLOW));
         elseif Questie.db.char.journey[i].Event == "Note" then
-            local title = Questie:Colorize(Questie.db.char.journey[i].Title, 'gray');
-            recentEvents[i]:SetText(timestamp .. Questie:Colorize(l10n('Note Created: %s', title), 'yellow'));
+            local title = Questie:Colorize(Questie.db.char.journey[i].Title, Questie.COLORS.GRAY);
+            recentEvents[i]:SetText(timestamp .. Questie:Colorize(l10n('Note Created: %s', title), Questie.COLORS.YELLOW));
         end
 
         container:AddChild(recentEvents[i]);
@@ -72,7 +72,7 @@ function _QuestieJourney.myJourney:DrawTab(container)
     if counter == 0 then
         local justdoit = AceGUI:Create("Label");
         justdoit:SetFullWidth(true);
-        justdoit:SetText(Questie:Colorize(l10n("It's about time you embark on your first Journey!"), 'yellow'));
+        justdoit:SetText(Questie:Colorize(l10n("It's about time you embark on your first Journey!"), Questie.COLORS.YELLOW));
         container:AddChild(justdoit);
     end
 

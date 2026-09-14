@@ -78,11 +78,11 @@ function _MinimapIcon:CreateDataBrokerObject()
 
         OnTooltipShow = function (tooltip)
             tooltip:AddLine("Questie ".. QuestieLib:GetAddonVersionString(), 1, 1, 1);
-            tooltip:AddLine(Questie:Colorize(l10n('Left Click') , 'gray') .. ": ".. l10n('Toggle Menu'));
-            tooltip:AddLine(Questie:Colorize(l10n('Ctrl + Shift + Left Click') , 'gray') .. ": ".. l10n('Toggle Questie'));
-            tooltip:AddLine(Questie:Colorize(l10n('Right Click') , 'gray') .. ": ".. l10n('Questie Options'));
-            tooltip:AddLine(Questie:Colorize(l10n('Ctrl + Right Click') , 'gray') .. ": ".. l10n('Hide Minimap Button'));
-            tooltip:AddLine(Questie:Colorize(l10n('Ctrl + Left Click'),   'gray') .. ": ".. l10n('Reload Questie'));
+            tooltip:AddLine(Questie:Colorize(l10n('Left Click') , Questie.COLORS.GRAY) .. ": ".. l10n('Toggle Menu'));
+            tooltip:AddLine(Questie:Colorize(l10n('Ctrl + Shift + Left Click') , Questie.COLORS.GRAY) .. ": ".. l10n('Toggle Questie'));
+            tooltip:AddLine(Questie:Colorize(l10n('Right Click') , Questie.COLORS.GRAY) .. ": ".. l10n('Questie Options'));
+            tooltip:AddLine(Questie:Colorize(l10n('Ctrl + Right Click') , Questie.COLORS.GRAY) .. ": ".. l10n('Hide Minimap Button'));
+            tooltip:AddLine(Questie:Colorize(l10n('Ctrl + Left Click'), Questie.COLORS.GRAY) .. ": ".. l10n('Reload Questie'));
         end,
     });
 

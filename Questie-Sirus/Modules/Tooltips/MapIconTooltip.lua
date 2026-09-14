@@ -233,7 +233,7 @@ function MapIconTooltip:Show()
 
                         local moneyReward = QuestXP.GetQuestRewardMoney(questData.questId)
                         if moneyReward > 0 then
-                            rewardString = rewardString .. Questie:Colorize("(" .. GetCoinTextureString(moneyReward) .. ") ", "white")
+                            rewardString = rewardString .. Questie:Colorize("(" .. GetCoinTextureString(moneyReward) .. ") ", Questie.COLORS.WHITE)
                         end
                     end
                     rewardString = rewardString .. questData.type
@@ -300,12 +300,12 @@ function MapIconTooltip:Show()
 
                         local nextQuestMoneyReward = QuestXP:GetQuestRewardMoney(nextQuest.Id);
                         if nextQuestMoneyReward > 0 then
-                            nextQuestMoneyRewardString = Questie:Colorize(string.format(" (%s)", GetCoinTextureString(nextQuestMoneyReward)), "white");
+                            nextQuestMoneyRewardString = Questie:Colorize(string.format(" (%s)", GetCoinTextureString(nextQuestMoneyReward)), Questie.COLORS.WHITE);
                         end
 
                         if (QuestieDB.IsGroupQuest(nextQuest.Id) or QuestieDB.IsDungeonQuest(nextQuest.Id) or QuestieDB.IsRaidQuest(nextQuest.Id)) then
                             local _, nextQuestTag = QuestieDB.GetQuestTagInfo(nextQuest.Id)
-                            nextQuestTagString = Questie:Colorize(string.format(" (%s)", nextQuestTag), "yellow")
+                            nextQuestTagString = Questie:Colorize(string.format(" (%s)", nextQuestTag), Questie.COLORS.YELLOW)
                         end
 
                         local nextQuestString = string.format("      %s%s%s%s%s", nextQuestTitleString, nextQuestIdString, nextQuestXpRewardString, nextQuestMoneyRewardString, nextQuestTagString); -- we need an offset to align with description
@@ -355,7 +355,7 @@ function MapIconTooltip:Show()
                         rewardTable[#rewardTable + 1] = scryersPenalty .. " " .. factionName
                     end
 
-                    self:AddLine(REPUTATION_ICON_TEXTURE .. " " .. Questie:Colorize(table.concat(rewardTable, " / "), "reputationBlue"), 1, 1, 1, 1, 1, 0)
+                    self:AddLine(REPUTATION_ICON_TEXTURE .. " " .. Questie:Colorize(table.concat(rewardTable, " / "), Questie.COLORS.REPUTATIONBLUE), 1, 1, 1, 1, 1, 0)
                 end
             end
         end

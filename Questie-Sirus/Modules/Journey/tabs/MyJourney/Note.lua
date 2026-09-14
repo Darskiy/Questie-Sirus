@@ -80,7 +80,7 @@ end
 
 _CreateDescription  =function ()
     local desc = AceGUI:Create("Label")
-    desc:SetText(Questie:Colorize(l10n('Create an entry in your journal to remember a specific moment. Simply supply a title and description and Questie will remember it for you!'), 'yellow'))
+    desc:SetText(Questie:Colorize(l10n('Create an entry in your journal to remember a specific moment. Simply supply a title and description and Questie will remember it for you!'), Questie.COLORS.YELLOW))
     desc:SetFullWidth(true)
     return desc
 end
@@ -111,12 +111,11 @@ _CreateNoteAddButton = function ()
 end
 
 _HandleNoteEntry = function ()
-    local error = Questie:Colorize('[Questie] ', 'blue')
     if titleBox:GetText() == '' then
-        print (error .. l10n('No Title was entered. You must enter a title before submitting your note.'))
+        Questie:Error(l10n('No Title was entered. You must enter a title before submitting your note.'))
         return
     elseif messageBox:GetText() == '' then
-        print (error .. l10n('No Note was entered. You must enter a note before submitting.'))
+        Questie:Error(l10n('No Note was entered. You must enter a note before submitting.'))
         return
     end
     local data = {}

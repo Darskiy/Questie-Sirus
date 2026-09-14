@@ -529,14 +529,7 @@ function _QuestieComms:BroadcastQuestLog(eventName, sendMode, targetPlayer) -- b
 
         for questId, data in pairs(QuestLogCache.questLog_DO_NOT_MODIFY) do -- DO NOT MODIFY THE RETURNED TABLE
             if (not QuestieDB.QuestPointers[questId]) then
-                if not Questie._sessionWarnings[questId] then
-                    if not (Questie.IsSoD or QuestieCompat.Is335) then
-                        Questie:Error(l10n("The quest %s is missing from Questie's database. Please report this on GitHub!", tostring(questId)))
-                    else
-                        Questie:Debug(Questie.DEBUG_DEVELOP, "The quest %s is missing from Questie's database", tostring(questId))
-                    end
-                    Questie._sessionWarnings[questId] = true
-                end
+                Questie:LogUncataloguedQuest(questId, data.title)
             else
                 local questType = data.questTag
                 local entry = {
@@ -650,14 +643,7 @@ function _QuestieComms:BroadcastQuestLogV2(eventName, sendMode, targetPlayer) --
 
         for questId, data in pairs(QuestLogCache.questLog_DO_NOT_MODIFY) do -- DO NOT MODIFY THE RETURNED TABLE
             if (not QuestieDB.QuestPointers[questId]) then
-                if not Questie._sessionWarnings[questId] then
-                    if not (Questie.IsSoD or QuestieCompat.Is335) then
-                        Questie:Error(l10n("The quest %s is missing from Questie's database. Please report this on GitHub!", tostring(questId)))
-                    else
-                        Questie:Debug(Questie.DEBUG_DEVELOP, "The quest %s is missing from Questie's database", tostring(questId))
-                    end
-                    Questie._sessionWarnings[questId] = true
-                end
+                Questie:LogUncataloguedQuest(questId, data.title)
             else
                 local questType = data.questTag
                 local entry = {
@@ -993,11 +979,11 @@ function _QuestieComms:Broadcast(packet)
     packet.writeMode = nil -- we dont need to include these in the packet data
     if packetWriteMode == _QuestieComms.QC_WRITE_WHISPER then
         local compressedData = QuestieSerializer:Serialize(packet);
-        Questie:Debug(Questie.DEBUG_DEVELOP,"send(|cFFFF2222", string.len(compressedData), "|r)")
+        Questie:Debug(Questie.DEBUG_DEVELOP, "send(" .. Questie:Colorize(string.len(compressedData), Questie.COLORS.RED) .. ")")
         Questie:SendCommMessage(_QuestieComms.prefix, compressedData, packetWriteMode, packetTarget, packetPriority)
     elseif packetWriteMode == _QuestieComms.QC_WRITE_CHANNEL then
         local compressedData = QuestieSerializer:Serialize(packet);
-        Questie:Debug(Questie.DEBUG_DEVELOP,"send(|cFFFF2222", string.len(compressedData), "|r)")
+        Questie:Debug(Questie.DEBUG_DEVELOP, "send(" .. Questie:Colorize(string.len(compressedData), Questie.COLORS.RED) .. ")")
         -- Always do channel messages as BULK priority
         Questie:SendCommMessage(_QuestieComms.prefix, compressedData, packetWriteMode, GetChannelName("questiecom"), "BULK")
         --OLD: C_ChatInfo.SendAddonMessage("questie", compressedData, "CHANNEL", GetChannelName("questiecom"))
@@ -1009,7 +995,7 @@ function _QuestieComms:Broadcast(packet)
         Questie:SendCommMessage(_QuestieComms.prefix, compressedData, packetWriteMode, "BULK")
     else
         local compressedData = QuestieSerializer:Serialize(packet);
-        Questie:Debug(Questie.DEBUG_DEVELOP, "send(|cFFFF2222", string.len(compressedData), "|r)")
+        Questie:Debug(Questie.DEBUG_DEVELOP, "send(" .. Questie:Colorize(string.len(compressedData), Questie.COLORS.RED) .. ")")
         Questie:SendCommMessage(_QuestieComms.prefix, compressedData, packetWriteMode, nil, packetPriority)
         --OLD: C_ChatInfo.SendAddonMessage("questie", compressedData, packet.writeMode)
     end
@@ -1021,7 +1007,7 @@ end
 
 function _QuestieComms:OnCommReceived_unsafe(message, distribution, sender)
     --print("[" .. distribution .."][" .. sender .. "] " .. message)
-    Questie:Debug(Questie.DEBUG_DEVELOP, "|cFF22FF22", "sender:", "|r", sender, "distribution:", distribution, "Packet length:",string.len(message))
+    Questie:Debug(Questie.DEBUG_DEVELOP, Questie:Colorize("sender:", Questie.COLORS.GREEN), sender, "distribution:", distribution, "Packet length:", string.len(message))
     if message and sender and sender ~= UnitName("player") then
         local decompressedData
         if distribution == "YELL" then
@@ -1047,11 +1033,11 @@ function _QuestieComms:OnCommReceived_unsafe(message, distribution, sender)
                     if(majorOwn < tonumber(major) or (majorOwn == tonumber(major) and minorOwn < tonumber(minor)) or (majorOwn == tonumber(major) and minorOwn == tonumber(minor) and patchOwn < tonumber(patch)) and (not UnitAffectingCombat("player"))) then
                         suggestUpdate = false;
                         if(majorOwn < tonumber(major)) then
-                            Questie:Print("|cffff0000", l10n("A Major patch for Questie exists!"), "|r");
-                            Questie:Print("|cffff0000", l10n("Please update as soon as possible!"), "|r");
+                            Questie:Print(Questie:Colorize(l10n("A Major patch for Questie exists!"), Questie.COLORS.RED))
+                            Questie:Print(Questie:Colorize(l10n("Please update as soon as possible!"), Questie.COLORS.RED))
                         else
-                            Questie:Print("|cffff0000", l10n("You have an outdated version of Questie!"), "|r");
-                            Questie:Print("|cffff0000", l10n("Please consider updating!"), "|r");
+                            Questie:Print(Questie:Colorize(l10n("You have an outdated version of Questie!"), Questie.COLORS.RED))
+                            Questie:Print(Questie:Colorize(l10n("Please consider updating!"), Questie.COLORS.RED))
                         end
                     end
                 end
@@ -1069,7 +1055,7 @@ function _QuestieComms:OnCommReceived_unsafe(message, distribution, sender)
             if(floor(commMessageVersion) < floor(decompressedData.msgVer)) then
                 Questie:Error(l10n("You have an incompatible QuestieComms message! Please update!"), l10n("  Yours: v"), commMessageVersion, sender..": v", decompressedData.msgVer);
             elseif(floor(commMessageVersion) > floor(decompressedData.msgVer)) then
-                Questie:Print("|cFFFF0000", l10n("WARNING!"), "|r", sender, l10n("has an incompatible Questie version, QuestieComms won't work!"), l10n(" Yours: v"), commMessageVersion, sender..": v", decompressedData.msgVer)
+                Questie:Warning(sender, l10n("has an incompatible Questie version, QuestieComms won't work!"), l10n(" Yours: v"), commMessageVersion, sender..": v", decompressedData.msgVer)
             end
             warnedUpdate = true;
         end

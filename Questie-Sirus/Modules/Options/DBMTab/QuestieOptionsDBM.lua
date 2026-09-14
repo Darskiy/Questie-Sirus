@@ -32,7 +32,7 @@ function QuestieOptions.tabs.dbm:Initialize()
             info_text = {
                 type = "description",
                 order = 0.1,
-                name = function() return Questie:Colorize(l10n('The DBM HUD integrates with the addon DeadlyBossMods to show a radar of objective icons on your entire screen. Enabling this feature usually requires a /reload to take effect.'), 'gray'); end,
+                name = function() return Questie:Colorize(l10n('The DBM HUD integrates with the addon DeadlyBossMods to show a radar of objective icons on your entire screen. Enabling this feature usually requires a /reload to take effect.'), Questie.COLORS.GRAY); end,
                 fontSize = "medium",
             },
             info_postspacer = QuestieOptionsUtils:Spacer(0.2),

@@ -37,17 +37,17 @@ function _QuestieJourney:DrawQuestDetailsFrame(container, quest)
 
     -- Generic Quest Information
 
-    local levelLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n('Recommended Quest Level: '), 'yellow') .. quest.level, true)
+    local levelLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n('Recommended Quest Level: '), Questie.COLORS.YELLOW) .. quest.level, true)
     container:AddChild(levelLabel)
 
-    local minLevelLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n('Minimum Required Level for Quest: '), 'yellow') .. quest.requiredLevel, true)
+    local minLevelLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n('Minimum Required Level for Quest: '), Questie.COLORS.YELLOW) .. quest.requiredLevel, true)
     container:AddChild(minLevelLabel)
 
     local levelDiffString = _QuestieJourney:GetDifficultyString(quest.level, quest.requiredLevel)
     local levelDiffLabel = _QuestieJourney:CreateLabel(levelDiffString, true)
     container:AddChild(levelDiffLabel)
 
-    local questIdLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n('Quest ID: '), 'yellow') .. quest.Id, true)
+    local questIdLabel = _QuestieJourney:CreateLabel(Questie:Colorize(l10n('Quest ID: '), Questie.COLORS.YELLOW) .. quest.Id, true)
     container:AddChild(questIdLabel)
 
     QuestieJourneyUtils:Spacer(container)
@@ -363,7 +363,7 @@ function _QuestieJourney:GetDifficultyString(questLevel, questMinLevel)
     diffStr = diffStr .. "|cFF40C040[".. green .."]|r "
     diffStr = diffStr .. "|cFFC0C0C0[".. gray .."]|r "
 
-    return Questie:Colorize(l10n('Difficulty Range: %s', diffStr), 'yellow')
+    return Questie:Colorize(l10n('Difficulty Range: %s', diffStr), Questie.COLORS.YELLOW)
 end
 
 ---@param quest Quest

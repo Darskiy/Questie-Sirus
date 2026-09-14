@@ -15,6 +15,8 @@ local TrackerBaseFrame = QuestieLoader:ImportModule("TrackerBaseFrame")
 local QuestieValidateGameCache = QuestieLoader:ImportModule("QuestieValidateGameCache")
 ---@type QuestieLib
 local QuestieLib = QuestieLoader:ImportModule("QuestieLib");
+---@type l10n
+local l10n = QuestieLoader:ImportModule("l10n")
 
 function Questie:OnInitialize()
     -- This has to happen OnInitialize to be available asap
@@ -57,79 +59,250 @@ function Questie:RefreshConfig(_, db, profileName)
     Questie:Debug(Questie.DEBUG_DEVELOP, "Switched Ace Profile!")
 end
 
---- Colorize a string with a color code
----@param str string @The string colorize
---Name or string in the format "RRGGBB" i.e "FF0000" for red
----@param color "red"|"gray"|"purple"|"blue"|"lightBlue"|"reputationBlue"|"yellow"|"orange"|"green"|"white"|"gold"|string
+--- Centralized UI color palette
+Questie.COLORS = {
+    CYAN           = "|cFF4DDBFF",
+    RED            = "|cFFFF0000",
+    YELLOW         = "|cFFFFFF00",
+    GREEN          = "|cFF00FF00",
+    ORANGE         = "|cFFFF6F22",
+    GRAY           = "|cFFA6A6A6",
+    GOLD           = "|cFFFFD100",
+    WHITE          = "|cFFFFFFFF",
+    BLUE           = "|cB900FFFF", -- Legacy Questie blue (soft purple-blue)
+    LIGHTBLUE      = "|cFF39C0ED",
+    PURPLE         = "|cFFB900FF",
+    REPUTATIONBLUE = "|cFF8080FF",
+    LIME           = "|cFF6CE314",
+    DARKGREEN      = "|cFF00BC32",
+    TEAL           = "|cFF00F2E6",
+    LIGHTYELLOW    = "|cFFEBF441",
+    LAVENDER       = "|cFF7C83FF",
+    SALMON         = "|cFFFF8484",
+}
+
+--- WotLK Class Color Tokens
+Questie.CLASS_COLORS = {
+    DEATHKNIGHT = "|cFFC41F3B",
+    DRUID       = "|cFFFF7D0A",
+    HUNTER      = "|cFFABD473",
+    MAGE        = "|cFF69CCF0",
+    PALADIN     = "|cFFF58CBA",
+    PRIEST      = "|cFFFFFFFF",
+    ROGUE       = "|cFFFFF569",
+    SHAMAN      = "|cFF0070DE",
+    WARLOCK     = "|cFF9482C9",
+    WARRIOR     = "|cFFC79C6E",
+}
+
+--- Colorize a string with a direct color token (e.g. Questie.COLORS.YELLOW), token name, or custom hex
+---@param str string|number @The text to colorize
+---@param color string @Questie.COLORS token, named key ("yellow", "MAGE"), or custom hex
 ---@return string
 function Questie:Colorize(str, color)
-    local c = "|cFF" .. color;
-
-    if color == "red" then
-        c = "|cFFff0000";
-    elseif color == "gray" then
-        c = "|cFFa6a6a6";
-    elseif color == "purple" then
-        c = "|cFFB900FF";
-    elseif color == "blue" then
-        c = "|cB900FFFF";
-    elseif color == "lightBlue" then
-        c = "|cB900FFFF";
-    elseif color == "reputationBlue" then
-        c = "|cFF8080ff";
-    elseif color == "yellow" then
-        c = "|cFFffff00";
-    elseif color == "orange" then
-        c = "|cFFFF6F22";
-    elseif color == "green" then
-        c = "|cFF00ff00";
-    elseif color == "white" then
-        c = "|cFFffffff";
-    elseif color == "gold" then
-        c = "|cFFffd100" -- this is the default game font
+    if not color then
+        return tostring(str)
     end
-
-    return c .. str .. "|r"
+    -- Fast path: direct WoW color escape code (e.g. Questie.COLORS.YELLOW or "|c...")
+    if string.sub(color, 1, 2) == "|c" then
+        return color .. tostring(str) .. "|r"
+    end
+    -- Named token lookup in Questie.COLORS or Questie.CLASS_COLORS (e.g. "yellow", "mage")
+    local token = string.upper(color)
+    local c = Questie.COLORS[token] or Questie.CLASS_COLORS[token]
+    if c then
+        return c .. tostring(str) .. "|r"
+    end
+    -- Raw hex fallback (e.g. "FFFFFF")
+    return "|cFF" .. color .. tostring(str) .. "|r"
 end
 
+---@param class string @Class name
+---@return string @WoW color code
 function Questie:GetClassColor(class)
-    class = string.lower(class);
+    local token = class and string.upper(class)
+    return (token and Questie.CLASS_COLORS[token]) or Questie.COLORS.RED
+end
 
-    if class == 'druid' then
-        return '|cFFFF7D0A';
-    elseif class == 'hunter' then
-        return '|cFFABD473';
-    elseif class == 'mage' then
-        return '|cFF69CCF0';
-    elseif class == 'paladin' then
-        return '|cFFF58CBA';
-    elseif class == 'priest' then
-        return '|cFFFFFFFF';
-    elseif class == 'rogue' then
-        return '|cFFFFF569';
-    elseif class == 'shaman' then
-        return '|cFF0070DE';
-    elseif class == 'warlock' then
-        return '|cFF9482C9';
-    elseif class == 'warrior' then
-        return '|cFFC79C6E';
-    else
-        return '|cffff0000'; -- error red
+local LOG_PREFIXES = {
+    ERROR = Questie.COLORS.RED .. "[ERROR]|r",
+    WARNING = Questie.COLORS.YELLOW .. "[WARNING]|r",
+    INFO = Questie.COLORS.DARKGREEN .. "[INFO]|r",
+}
+
+-- Fast O(1) single-level debug prefix lookup
+local DEBUG_LEVEL_PREFIXES = {
+    [1] = Questie.COLORS.TEAL .. "[CRITICAL]|r",
+    [2] = Questie.COLORS.LIGHTYELLOW .. "[ELEVATED]|r",
+    [4] = Questie.COLORS.DARKGREEN .. "[INFO]|r",
+    [8] = Questie.COLORS.LAVENDER .. "[DEVELOP]|r",
+    [16] = Questie.COLORS.SALMON .. "[SPAM]|r",
+}
+
+local DEBUG_LEVEL_ORDER = {
+    { 1, DEBUG_LEVEL_PREFIXES[1] },
+    { 2, DEBUG_LEVEL_PREFIXES[2] },
+    { 4, DEBUG_LEVEL_PREFIXES[4] },
+    { 8, DEBUG_LEVEL_PREFIXES[8] },
+    { 16, DEBUG_LEVEL_PREFIXES[16] },
+}
+
+local THROTTLE_SECONDS = 5
+local THROTTLE_MAX_ENTRIES = 50
+
+local function toThrottleString(val)
+    if val == nil then
+        return ""
     end
+    return tostring(val)
+end
+
+local function buildThrottleKey(...)
+    local n = select("#", ...)
+    if n == 0 then
+        return ""
+    end
+    local a, b, c = ...
+    if n == 1 then
+        return toThrottleString(a)
+    elseif n == 2 then
+        return toThrottleString(a) .. "\0" .. toThrottleString(b)
+    else
+        return toThrottleString(a) .. "\0" .. toThrottleString(b) .. "\0" .. toThrottleString(c)
+    end
+end
+
+local function createThrottleTable()
+    return {
+        cache = {},
+        count = 0,
+    }
+end
+
+local errorThrottle = createThrottleTable()
+local warningThrottle = createThrottleTable()
+
+local function isThrottled(throttle, ...)
+    local key = buildThrottleKey(...)
+    local now = GetTime()
+    local lastSeen = throttle.cache[key]
+    if lastSeen and (now >= lastSeen) and (now - lastSeen < THROTTLE_SECONDS) then
+        return true
+    end
+
+    if not lastSeen then
+        if throttle.count >= THROTTLE_MAX_ENTRIES then
+            local liveCount = 0
+            for k, timestamp in pairs(throttle.cache) do
+                if (now < timestamp) or ((now - timestamp) >= THROTTLE_SECONDS) then
+                    throttle.cache[k] = nil
+                else
+                    liveCount = liveCount + 1
+                end
+            end
+            throttle.count = liveCount
+            if liveCount >= THROTTLE_MAX_ENTRIES then
+                return true
+            end
+        end
+        throttle.count = throttle.count + 1
+    end
+
+    throttle.cache[key] = now
+    return false
 end
 
 function Questie:Error(...)
-    Questie:Print("|cffff0000[ERROR]|r", ...)
+    if isThrottled(errorThrottle, ...) then
+        return
+    end
+    Questie:Print(LOG_PREFIXES.ERROR, ...)
 end
 
 function Questie:Warning(...)
-    if Questie.db.profile.debugEnabled then -- prints regardless of "debugPrint" toggle
-        Questie:Print("|cffffff00[WARNING]|r", ...)
+    if isThrottled(warningThrottle, ...) then
+        return
     end
+    Questie:Print(LOG_PREFIXES.WARNING, ...)
 end
 
 function Questie:Info(...)
-    Questie:Print("|cff00bc32[INFO]|r", ...)
+    Questie:Print(LOG_PREFIXES.INFO, ...)
+end
+
+--- Checks whether a session warning has already been triggered for the given key.
+---@param key string|number
+---@return boolean
+function Questie:HasSessionWarning(key)
+    return (self._sessionWarnings and self._sessionWarnings[key] == true) or false
+end
+
+--- Records a session warning for the given key.
+---@param key string|number
+function Questie:RecordSessionWarning(key)
+    if not self._sessionWarnings then
+        self._sessionWarnings = {}
+    end
+    self._sessionWarnings[key] = true
+end
+
+--- Clears all recorded session warnings.
+function Questie:ClearSessionWarnings()
+    if self._sessionWarnings then
+        wipe(self._sessionWarnings)
+    else
+        self._sessionWarnings = {}
+    end
+end
+
+--- Core method to log an uncatalogued quest or questgiver once per session.
+---@param name string|number The quest title (or quest ID fallback)
+---@param unitType string The entity or unit type ("Quest", "Creature", "NPC", "GameObject", "Object", "Item")
+---@param entityId number|string The entity ID
+---@param isEnder boolean? Whether this is a quest ender (true) or quest starter (false/nil)
+function Questie:LogUncatalogued(name, unitType, entityId, isEnder)
+    local tag = QuestieLib.GetEntityTag(unitType, entityId)
+    local sessionKey = (isEnder and "ender:" or "starter:") .. tag .. ":" .. tostring(name)
+
+    if self:HasSessionWarning(sessionKey) or (unitType == "Quest" and self:HasSessionWarning(entityId)) then
+        return
+    end
+    self:RecordSessionWarning(sessionKey)
+    if unitType == "Quest" then
+        self:RecordSessionWarning(entityId)
+    end
+
+    if QuestieCompat.Is335 then
+        local msgKey = isEnder and 'Uncatalogued quest ender: "%s" (%s)' or 'Uncatalogued quest: "%s" (%s)'
+        self:Warning(l10n(msgKey, tostring(name), tag))
+    elseif not self.IsSoD then
+        self:Error(l10n("The quest %s is missing from Questie's database. Please report this on GitHub!", tostring(entityId)))
+    else
+        self:Debug(self.DEBUG_DEVELOP, "The quest %s is missing from Questie's database", tostring(entityId))
+    end
+end
+
+--- Logs an uncatalogued active quest found in the player's quest log.
+---@param questId number The quest ID
+---@param title string? The quest title (falls back to quest ID if nil)
+function Questie:LogUncataloguedQuest(questId, title)
+    self:LogUncatalogued(title or questId, "Quest", questId, false)
+end
+
+--- Logs an uncatalogued quest offered by a questgiver (Gossip / Greeting frame).
+---@param questName string The name of the quest entry
+---@param unitType string The questgiver unit type ("Creature", "GameObject", etc.)
+---@param unitId number The questgiver ID
+function Questie:LogUncataloguedStarter(questName, unitType, unitId)
+    self:LogUncatalogued(questName, unitType, unitId, false)
+end
+
+--- Logs an uncatalogued quest ender turned in to a questgiver (Gossip / Greeting frame).
+---@param questName string The name of the quest entry
+---@param unitType string The questgiver unit type ("Creature", "GameObject", etc.)
+---@param unitId number The questgiver ID
+function Questie:LogUncataloguedEnder(questName, unitType, unitId)
+    self:LogUncatalogued(questName, unitType, unitId, true)
 end
 
 -- Global debug levels
@@ -142,22 +315,28 @@ Questie.DEBUG_DEVELOP = 2 ^ 3
 Questie.DEBUG_SPAM = 2 ^ 4
 
 function Questie:Debug(msgDebugLevel, ...)
-    if (Questie.db.profile.debugEnabled) then
-        local optionsDebugLevel = Questie.db.profile.debugLevel
-
-        if (band(optionsDebugLevel, msgDebugLevel) == 0) or (not Questie.db.profile.debugEnabledPrint) then
-            return
-        end
-
-        local prefix = ""
-        if (band(msgDebugLevel, Questie.DEBUG_CRITICAL) ~= 0) then prefix = prefix.."|cff00f2e6[CRITICAL]|r" end
-        if (band(msgDebugLevel, Questie.DEBUG_ELEVATED) ~= 0) then prefix = prefix.."|cffebf441[ELEVATED]|r" end
-        if (band(msgDebugLevel, Questie.DEBUG_INFO) ~= 0) then prefix = prefix.."|cff00bc32[INFO]|r" end
-        if (band(msgDebugLevel, Questie.DEBUG_DEVELOP) ~= 0) then prefix = prefix.."|cff7c83ff[DEVELOP]|r" end
-        if (band(msgDebugLevel, Questie.DEBUG_SPAM) ~= 0) then prefix = prefix.."|cffff8484[SPAM]|r" end
-
-        Questie:Print(prefix, ...)
+    local profile = Questie.db.profile
+    if not (profile.debugEnabled and profile.debugEnabledPrint) then
+        return
     end
+
+    if (not msgDebugLevel) or type(msgDebugLevel) ~= "number" or band(profile.debugLevel, msgDebugLevel) == 0 then
+        return
+    end
+
+    local prefix = DEBUG_LEVEL_PREFIXES[msgDebugLevel]
+    if not prefix then
+        local parts = {}
+        for i = 1, #DEBUG_LEVEL_ORDER do
+            local level = DEBUG_LEVEL_ORDER[i]
+            if band(msgDebugLevel, level[1]) ~= 0 then
+                parts[#parts + 1] = level[2]
+            end
+        end
+        prefix = table.concat(parts, " ")
+    end
+
+    Questie:Print(prefix, ...)
 end
 
 Questie.icons = {

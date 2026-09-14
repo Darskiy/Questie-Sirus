@@ -971,7 +971,7 @@ function QuestieDBCompiler:CompileTableCoroutine(tbl, types, order, lookup, data
                 local t = types[key]
 
                 if v and not supportedTypes[type(v)][t] then
-                    Questie:Error("|cFFFF0000Invalid datatype!|r   " .. kind .. "s[" .. tostring(id) .. "]."..key..": \"" .. type(v) .. "\" is not compatible with type \"" .. t .."\"")
+                    Questie:Error("Invalid datatype!   " .. kind .. "s[" .. tostring(id) .. "]."..key..": \"" .. type(v) .. "\" is not compatible with type \"" .. t .."\"")
                     return
                 end
                 if not writers[t] then
@@ -1034,15 +1034,15 @@ function QuestieDBCompiler:Compile()
     QuestieDBCompiler.startTime = GetTime()
     QuestieDBCompiler.totalSize = 0
 
-    print("\124cFF4DDBFF [6/9] " .. l10n("Updating NPCs") .. "...")
+    Questie:Print(Questie:Colorize("[6/9] " .. l10n("Updating NPCs") .. "...", Questie.COLORS.CYAN))
     QuestieDBCompiler:CompileNPCs()
-    print("\124cFF4DDBFF [7/9] " .. l10n("Updating objects") .. "...")
+    Questie:Print(Questie:Colorize("[7/9] " .. l10n("Updating objects") .. "...", Questie.COLORS.CYAN))
     QuestieDBCompiler:CompileObjects()
-    print("\124cFF4DDBFF [8/9] " .. l10n("Updating quests") .. "...")
+    Questie:Print(Questie:Colorize("[8/9] " .. l10n("Updating quests") .. "...", Questie.COLORS.CYAN))
     QuestieDBCompiler:CompileQuests()
-    print("\124cFF4DDBFF [9/9] " .. l10n("Updating items") .. "...")
+    Questie:Print(Questie:Colorize("[9/9] " .. l10n("Updating items") .. "...", Questie.COLORS.CYAN))
     QuestieDBCompiler:CompileItems()
-    print("\124cFFAAEEFF"..l10n("Questie DB update complete!"))
+    Questie:Print(Questie:Colorize(l10n("Database update complete!"), Questie.COLORS.CYAN))
 
     Questie.db.global.dbCompiledExpansion = WOW_PROJECT_ID
 
@@ -1079,14 +1079,14 @@ function QuestieDBCompiler:ValidateNPCs()
             local b = nonCompiledData[QuestieDB.npcKeys[key]]
 
             if type(a) == "number"  and abs(a-(b or 0)) > 0.2 then
-                Questie:Warning("Nonmatching number at " .. key .. "  " .. tostring(a) .. " ~= " .. tostring(b) .. " for ID: ".. npcId)
+                Questie:Debug(Questie.DEBUG_DEVELOP, "Nonmatching number at " .. key .. "  " .. tostring(a) .. " ~= " .. tostring(b) .. " for ID: ".. npcId)
                 return
             elseif type(a) == "string" and a ~= (b or "") then
-                Questie:Warning("Nonmatching string at " .. key .. "  " .. tostring(a) .. " ~= " .. tostring(b) .. " for ID: ".. npcId)
+                Questie:Debug(Questie.DEBUG_DEVELOP, "Nonmatching string at " .. key .. "  " .. tostring(a) .. " ~= " .. tostring(b) .. " for ID: ".. npcId)
                 return
             elseif type(a) == "table" then
                 if not equals(a, (b or {})) then
-                    Questie:Warning("Nonmatching table at " .. key .. "  " .. id .. " for ID: ".. npcId)
+                    Questie:Debug(Questie.DEBUG_DEVELOP, "Nonmatching table at " .. key .. "  " .. id .. " for ID: ".. npcId)
                     DevTools_Dump({
                         ["Compiled Table:"] = a,
                         ["Base Table:"] = b
@@ -1127,14 +1127,14 @@ function QuestieDBCompiler:ValidateObjects()
             local b = nonCompiledData[QuestieDB.objectKeys[key]]
 
             if type(a) == "number"  and abs(a-(b or 0)) > 0.2 then
-                Questie:Warning("Nonmatching number at " .. key .. "  " .. tostring(a) .. " ~= " .. tostring(b) .. " for ID: ".. objectId)
+                Questie:Debug(Questie.DEBUG_DEVELOP, "Nonmatching number at " .. key .. "  " .. tostring(a) .. " ~= " .. tostring(b) .. " for ID: ".. objectId)
                 return
             elseif type(a) == "string" and a ~= (b or "") then
-                Questie:Warning("Nonmatching string at " .. key .. "  " .. tostring(a) .. " ~= " .. tostring(b) .. " for ID: ".. objectId)
+                Questie:Debug(Questie.DEBUG_DEVELOP, "Nonmatching string at " .. key .. "  " .. tostring(a) .. " ~= " .. tostring(b) .. " for ID: ".. objectId)
                 return
             elseif type(a) == "table" then
                 if not equals(a, (b or {})) then
-                    Questie:Warning("Nonmatching table at " .. key .. "  " .. id  .. " for ID: ".. objectId)
+                    Questie:Debug(Questie.DEBUG_DEVELOP, "Nonmatching table at " .. key .. "  " .. id  .. " for ID: ".. objectId)
                     DevTools_Dump({
                         ["Compiled Table:"] = a,
                         ["Base Table:"] = b
@@ -1244,14 +1244,14 @@ function QuestieDBCompiler:ValidateItems()
             local b = nonCompiledData[QuestieDB.itemKeys[key]]
 
             if type(a) == "number"  and abs(a-(b or 0)) > 0.2 then
-                Questie:Warning("Nonmatching number at " .. key .. "  " .. tostring(a) .. " ~= " .. tostring(b) .. " for ID: ".. itemId)
+                Questie:Debug(Questie.DEBUG_DEVELOP, "Nonmatching number at " .. key .. "  " .. tostring(a) .. " ~= " .. tostring(b) .. " for ID: ".. itemId)
                 return
             elseif type(a) == "string" and a ~= (b or "") then
-                Questie:Warning("Nonmatching string at " .. key .. "  " .. tostring(a) .. " ~= " .. tostring(b) .. " for ID: ".. itemId)
+                Questie:Debug(Questie.DEBUG_DEVELOP, "Nonmatching string at " .. key .. "  " .. tostring(a) .. " ~= " .. tostring(b) .. " for ID: ".. itemId)
                 return
             elseif type(a) == "table" then
                 if not equals(a, (b or {})) then
-                    Questie:Warning("Nonmatching table at " .. key .. "  " .. id  .. " for ID: ".. itemId)
+                    Questie:Debug(Questie.DEBUG_DEVELOP, "Nonmatching table at " .. key .. "  " .. id  .. " for ID: ".. itemId)
                     DevTools_Dump({
                         ["Compiled Table:"] = a,
                         ["Base Table:"] = b
@@ -1331,10 +1331,10 @@ function QuestieDBCompiler:ValidateQuests()
             --     -- Do nothing
             -- else
             if type(a) == "number"  and abs(a-(b or 0)) > 0.2 then
-                Questie:Warning("Nonmatching number at " .. key .. "  " .. tostring(a) .. " ~= " .. tostring(b) .. " for ID: ".. questId)
+                Questie:Debug(Questie.DEBUG_DEVELOP, "Nonmatching number at " .. key .. "  " .. tostring(a) .. " ~= " .. tostring(b) .. " for ID: ".. questId)
                 return
             elseif type(a) == "string" and a ~= (b or "") then
-                Questie:Warning("Nonmatching string at " .. key .. "  " .. tostring(a) .. " ~= " .. tostring(b) .. " for ID: ".. questId)
+                Questie:Debug(Questie.DEBUG_DEVELOP, "Nonmatching string at " .. key .. "  " .. tostring(a) .. " ~= " .. tostring(b) .. " for ID: ".. questId)
                 return
             elseif type(a) == "table" then
                 --? This is kind of stupid, but because the compiler always has to write a int24 it will always write 0 for empty tables
@@ -1348,7 +1348,7 @@ function QuestieDBCompiler:ValidateQuests()
                 end
 
                 if not equals(a, (b or {})) then
-                    Questie:Warning("Nonmatching table at " .. key .. "  " .. id .. " for ID: ".. questId)
+                    Questie:Debug(Questie.DEBUG_DEVELOP, "Nonmatching table at " .. key .. "  " .. id .. " for ID: ".. questId)
                     DevTools_Dump({
                         ["Compiled Table:"] = a,
                         ["Base Table:"] = b

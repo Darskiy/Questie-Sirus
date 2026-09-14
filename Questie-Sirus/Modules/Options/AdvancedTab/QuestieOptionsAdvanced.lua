@@ -278,7 +278,7 @@ function QuestieOptions.tabs.advanced:Initialize()
                 type = "description",
                 order = 4.8,
                 name = function()
-                    return Questie:Colorize(l10n("Questie-Sirus is adapted for WoW Sirus by Darskiy. Please report issues and submit feedback on GitHub: https://github.com/Darskiy/Questie-Sirus"), 'gold');
+                    return Questie:Colorize(l10n("Questie-Sirus is adapted for WoW Sirus by Darskiy. Please report issues and submit feedback on GitHub: https://github.com/Darskiy/Questie-Sirus"), Questie.COLORS.GOLD);
                 end,
                 fontSize = "medium",
             },

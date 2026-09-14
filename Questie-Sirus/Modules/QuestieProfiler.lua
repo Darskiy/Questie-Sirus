@@ -113,7 +113,7 @@ end
 
 function QuestieProfiler:HookModules()
     for moduleName, module in pairs(QuestieLoader._modules) do
-        print("Hooking module " .. moduleName)
+        Questie:Debug(Questie.DEBUG_DEVELOP, "Hooking module " .. moduleName)
         QuestieProfiler:HookTable(module, moduleName)
     end
 end
@@ -525,7 +525,7 @@ function QuestieProfiler:Unhook()
 end
 
 function QuestieProfiler:Start() -- call ingame when developing /run QuestieLoader:ImportModule("Profiler"):Start()
-    print("Starting profiler...")
+    Questie:Print("Starting profiler...")
     QuestieProfiler:DoHooks(function()
         QuestieProfiler:HookFrames()
         if QuestieProfiler.baseUI then

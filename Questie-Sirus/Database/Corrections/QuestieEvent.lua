@@ -110,7 +110,7 @@ function QuestieEvent:Load()
         endMonth = tonumber(endMonth)
 
         if _WithinDates(startDay, startMonth, endDay, endMonth) and (eventCorrections[eventName] ~= false) then
-            print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n(eventName)))
+            Questie:Print(Questie:Colorize(l10n("The '%s' world event is active!", l10n(eventName)), Questie.COLORS.LIME))
             activeEvents[eventName] = true
         end
     end
@@ -276,7 +276,7 @@ _LoadDarkmoonFaire = function()
         end
     end
 
-    print(Questie:Colorize("[Questie]", "yellow"), "|cFF6ce314" .. l10n("The '%s' world event is active!", l10n("Darkmoon Faire")))
+    Questie:Print(Questie:Colorize(l10n("The '%s' world event is active!", l10n("Darkmoon Faire")), Questie.COLORS.LIME))
 end
 
 --- Checks wheather the current date is within the given date range

@@ -1681,8 +1681,6 @@ function _QuestieDB:HideClassAndRaceQuests()
     Questie:Debug(Questie.DEBUG_DEVELOP, "Other class and race quests hidden");
 end
 
-local _loggedMismatches = {}
-
 -- This function is intended for usage with Gossip and Greeting frames, where there's a list of quests but no QuestIDs are
 -- obtainable until entering the specific quest dialog.
 -- This is a bruteforce method for obtaining a QuestID with no input other than a quest name, and the ID of the questgiver.
@@ -1707,47 +1705,28 @@ function QuestieDB.GetQuestIDFromName(name, questgiverGUID, questStarter)
         else
             return questID; -- If the questgiver is not an NPC or object, bail!
         end
-        -- iterate through every questEnds entry in our questgiver's DB, and check if each quest name matches this greeting frame entry
-        if questStarter == true then
-            if questsStarted then
-                for _, id in pairs(questsStarted) do
-                    if (name == QuestieDB.QueryQuestSingle(id, "name")) and (QuestieDB.IsDoable(id)) then
-                        -- the QuestieDB.IsDoable check is important to filter out identically named quests
-                        questID = id
-                    end
+
+        local candidateQuests = questStarter and questsStarted or questsEnded
+        if candidateQuests then
+            for _, id in pairs(candidateQuests) do
+                if (name == QuestieDB.QueryQuestSingle(id, "name")) and (QuestieDB.IsDoable(id)) and (questStarter or QuestiePlayer.currentQuestlog[id]) then
+                    questID = id
+                    break
                 end
-            elseif QuestieCompat.Is335 then
-                local mismatchKey = unit_type .. ":" .. tostring(questgiverID) .. ":" .. tostring(name)
-                if not _loggedMismatches[mismatchKey] then
-                    _loggedMismatches[mismatchKey] = true
-                    local unitTypeDisplay = l10n(unit_type)
-                    Questie:Info(l10n("Uncatalogued quest: %s (%s %s)", tostring(name), unitTypeDisplay, tostring(questgiverID)))
-                end
-            elseif not Questie.IsSoD then
-                Questie:Error(l10n("Database mismatch! No entries found that match quest name. Please report this on GitHub!"))
-                Questie:Error(l10n("Queststarter is: ") .. unit_type .. " " .. tostring(questgiverID))
-                Questie:Error(l10n("Quest name is: ") .. tostring(name))
-                Questie:Error(l10n("Client info is: ") .. GetBuildInfo() .. "; " .. QuestieLib:GetAddonVersionString())
-            else
-                Questie:Debug(Questie.DEBUG_DEVELOP, "Database mismatch! No entries found that match quest name:", unit_type, questgiverID, name)
             end
-        else
-            if questsEnded then
-                for _, id in pairs(questsEnded) do
-                    if (name == QuestieDB.QueryQuestSingle(id, "name")) and (QuestieDB.IsDoable(id)) and QuestiePlayer.currentQuestlog[id] then
-                        questID = id
-                    end
-                end
-            elseif QuestieCompat.Is335 then
-                local mismatchKey = unit_type .. ":" .. tostring(questgiverID) .. ":" .. tostring(name)
-                if not _loggedMismatches[mismatchKey] then
-                    _loggedMismatches[mismatchKey] = true
-                    local unitTypeDisplay = l10n(unit_type)
-                    Questie:Info(l10n("Uncatalogued quest ender: %s (%s %s)", tostring(name), unitTypeDisplay, tostring(questgiverID)))
+        end
+
+        if questID == 0 then
+            if QuestieCompat.Is335 then
+                if questStarter then
+                    Questie:LogUncataloguedStarter(name, unit_type, questgiverID)
+                else
+                    Questie:LogUncataloguedEnder(name, unit_type, questgiverID)
                 end
             elseif not Questie.IsSoD then
+                local roleKey = questStarter and "Queststarter is: " or "Questender is: "
                 Questie:Error(l10n("Database mismatch! No entries found that match quest name. Please report this on GitHub!"))
-                Questie:Error(l10n("Questender is: ") .. unit_type .. " " .. tostring(questgiverID))
+                Questie:Error(l10n(roleKey) .. unit_type .. " " .. tostring(questgiverID))
                 Questie:Error(l10n("Quest name is: ") .. tostring(name))
                 Questie:Error(l10n("Client info is: ") .. GetBuildInfo() .. "; " .. QuestieLib:GetAddonVersionString())
             else

@@ -10,8 +10,9 @@ local WOW_PROJECT_ID = QuestieCompat.WOW_PROJECT_ID
 -- Check addon is not renamed to avoid conflicts in global name space.
 if (not QuestieCompat.Is335) and addonName ~= "Questie" then
     local msg = { "You have renamed Questie addon.", "This is restricted to avoid issues.", "Please remove '"..addonName.."'", "and reinstall the original version."}
+    local errorTag = (Questie and Questie.COLORS and (Questie.COLORS.RED .. "ERROR|r")) or "ERROR"
     StaticPopupDialogs["QUESTIE_ADDON_NAME_ERROR"] = {
-        text = "|cffff0000ERROR|r\n"..msg[1].."\n"..msg[2].."\n\n"..msg[3].."\n"..msg[4],
+        text = errorTag .. "\n"..msg[1].."\n"..msg[2].."\n\n"..msg[3].."\n"..msg[4],
         button2 = "OK",
         hasEditBox = false,
         whileDead = true,
@@ -19,12 +20,12 @@ if (not QuestieCompat.Is335) and addonName ~= "Questie" then
     }
 
     C_Timer.After(4, function()
-        DEFAULT_CHAT_FRAME:AddMessage("---------------------------------")
-        DEFAULT_CHAT_FRAME:AddMessage("|cffff0000ERROR|r: |cff42f5ad"..msg[1].."|r")
-        DEFAULT_CHAT_FRAME:AddMessage("|cffff0000ERROR|r: |cff42f5ad"..msg[2].."|r")
-        DEFAULT_CHAT_FRAME:AddMessage("|cffff0000ERROR|r: |cff42f5ad"..msg[3].."|r")
-        DEFAULT_CHAT_FRAME:AddMessage("|cffff0000ERROR|r: |cff42f5ad"..msg[4].."|r")
-        DEFAULT_CHAT_FRAME:AddMessage("---------------------------------")
+        if Questie and Questie.Error then
+            Questie:Error(table.concat(msg, " "))
+        elseif DEFAULT_CHAT_FRAME then
+            local errorPrefix = (Questie and Questie.COLORS and (Questie.COLORS.RED .. "[ERROR]|r")) or "[ERROR]"
+            DEFAULT_CHAT_FRAME:AddMessage(errorPrefix .. " " .. table.concat(msg, " "))
+        end
         error("ERROR: "..msg[1].." "..msg[2].." "..msg[3])
     end)
     StaticPopup_Show("QUESTIE_ADDON_NAME_ERROR")
@@ -32,15 +33,17 @@ if (not QuestieCompat.Is335) and addonName ~= "Questie" then
 end
 
 if Questie then
+    local duplicateMsg = "Questie already loaded! Please only have one Questie installed!"
+    local errorPrefix = (Questie and Questie.COLORS and (Questie.COLORS.RED .. "[ERROR]|r")) or "[ERROR]"
+    if DEFAULT_CHAT_FRAME then
+        DEFAULT_CHAT_FRAME:AddMessage(errorPrefix .. " -> " .. duplicateMsg)
+    end
     C_Timer.After(4, function()
-        error("ERROR!! -> Questie already loaded! Please only have one Questie installed!")
-        for _=1, 10 do
-            DEFAULT_CHAT_FRAME:AddMessage("|cFFFF0000ERROR!!|r -> Questie already loaded! Please only have one Questie installed!")
+        if DEFAULT_CHAT_FRAME then
+            DEFAULT_CHAT_FRAME:AddMessage(errorPrefix .. " -> " .. duplicateMsg)
         end
-    end);
-    error("ERROR!! -> Questie already loaded! Please only have one Questie installed!")
-    DEFAULT_CHAT_FRAME:AddMessage("|cFFFF0000ERROR!!|r -> Questie already loaded! Please only have one Questie installed!")
-    Questie = {}
+    end)
+    error("ERROR!! -> " .. duplicateMsg)
     return
 end
 

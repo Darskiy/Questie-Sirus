@@ -53,16 +53,16 @@ function QuestieSlash.HandleCommands(input)
 
     -- /questie help || /questie ?
     if mainCommand == "help" or mainCommand == "?" then
-        print(Questie:Colorize(l10n("Questie Commands"), "yellow"));
-        print(Questie:Colorize("/questie - " .. l10n("Toggles the Config window"), "yellow"));
-        print(Questie:Colorize("/questie toggle - " .. l10n("Toggles showing questie on the map and minimap"), "yellow"));
-        print(Questie:Colorize("/questie tomap [<npcId>/<npcName>/reset] - " .. l10n("Adds manual notes to the map for a given NPC ID or name. If the name is ambiguous multipe notes might be added. Without a second command the target will be added to the map. The 'reset' command removes all notes"), "yellow"));
-        print(Questie:Colorize("/questie minimap - " .. l10n("Toggles the Minimap Button for Questie"), "yellow"));
-        print(Questie:Colorize("/questie journey - " .. l10n("Toggles the My Journey window"), "yellow"));
-        print(Questie:Colorize("/questie tracker [show/hide/reset] - " .. l10n("Toggles the Tracker. Add 'show', 'hide', 'reset' to explicit show/hide or reset the Tracker"), "yellow"));
-        print(Questie:Colorize("/questie flex - " .. l10n("Flex the amount of quests you have completed so far"), "yellow"));
-        print(Questie:Colorize("/questie doable [questID] - " .. l10n("Prints whether you are eligibile to do a quest"), "yellow"));
-        print(Questie:Colorize("/questie version - " .. l10n("Prints Questie and client version info"), "yellow"));
+        Questie:Print(Questie:Colorize(l10n("Questie Commands"), Questie.COLORS.YELLOW));
+        Questie:Print(Questie:Colorize("/questie - " .. l10n("Toggles the Config window"), Questie.COLORS.YELLOW));
+        Questie:Print(Questie:Colorize("/questie toggle - " .. l10n("Toggles showing questie on the map and minimap"), Questie.COLORS.YELLOW));
+        Questie:Print(Questie:Colorize("/questie tomap [<npcId>/<npcName>/reset] - " .. l10n("Adds manual notes to the map for a given NPC ID or name. If the name is ambiguous multipe notes might be added. Without a second command the target will be added to the map. The 'reset' command removes all notes"), Questie.COLORS.YELLOW));
+        Questie:Print(Questie:Colorize("/questie minimap - " .. l10n("Toggles the Minimap Button for Questie"), Questie.COLORS.YELLOW));
+        Questie:Print(Questie:Colorize("/questie journey - " .. l10n("Toggles the My Journey window"), Questie.COLORS.YELLOW));
+        Questie:Print(Questie:Colorize("/questie tracker [show/hide/reset] - " .. l10n("Toggles the Tracker. Add 'show', 'hide', 'reset' to explicit show/hide or reset the Tracker"), Questie.COLORS.YELLOW));
+        Questie:Print(Questie:Colorize("/questie flex - " .. l10n("Flex the amount of quests you have completed so far"), Questie.COLORS.YELLOW));
+        Questie:Print(Questie:Colorize("/questie doable [questID] - " .. l10n("Prints whether you are eligibile to do a quest"), Questie.COLORS.YELLOW));
+        Questie:Print(Questie:Colorize("/questie version - " .. l10n("Prints Questie and client version info"), Questie.COLORS.YELLOW));
         return;
     end
 
@@ -174,10 +174,10 @@ function QuestieSlash.HandleCommands(input)
 
     if mainCommand == "doable" or mainCommand == "eligible" or mainCommand == "eligibility" then
         if not subCommand then
-            print(Questie:Colorize("[Questie] ", "yellow") .. "Usage: /questie " .. mainCommand .. " <questID>")
+            Questie:Print("Usage: /questie " .. mainCommand .. " <questID>")
             do return end
         elseif QuestieDB.QueryQuestSingle(tonumber(subCommand), "name") == nil then
-            print(Questie:Colorize("[Questie] ", "yellow") .. "Invalid quest ID")
+            Questie:Print("Invalid quest ID")
             return
         end
 
@@ -186,5 +186,5 @@ function QuestieSlash.HandleCommands(input)
         return
     end
 
-    print(Questie:Colorize("[Questie] ", "yellow") .. l10n("Invalid command. For a list of options please type: ") .. Questie:Colorize("/questie help", "yellow"));
+    Questie:Print(l10n("Invalid command. For a list of options please type: ") .. Questie:Colorize("/questie help", Questie.COLORS.YELLOW))
 end

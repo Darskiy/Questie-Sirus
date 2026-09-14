@@ -58,12 +58,12 @@ local debugMessagesLocales = {
         ["ruRU"] = "Ограничение количества значков: %s. Перерисовка!",
         ["enUS"] = true,
     },
-    ["Questie DB has updated!"] = {
-        ["ruRU"] = "База данных Questie обновляется!",
+    ["Database is updating..."] = {
+        ["ruRU"] = "Обновление базы данных...",
         ["enUS"] = true,
     },
-    ["Data is being processed, this may take a few moments and cause some lag..."] = {
-        ["ruRU"] = "Данные обрабатываются, это может занять некоторое время и стать причиной зависаний...",
+    ["Data processing may cause temporary stuttering."] = {
+        ["ruRU"] = "Во время обработки данных возможны кратковременные микрофризы.",
         ["enUS"] = true,
     },
     ["Updating NPCs"] = {
@@ -102,8 +102,8 @@ local debugMessagesLocales = {
         ["ruRU"] = "Обновление предметов",
         ["enUS"] = true,
     },
-    ["Questie DB update complete!"] = {
-        ["ruRU"] = "Обновление базы данных Questie завершено!",
+    ["Database update complete!"] = {
+        ["ruRU"] = "Обновление базы данных успешно завершено!",
         ["enUS"] = true,
     },
     ["%s for %s!"] = {
@@ -203,28 +203,16 @@ local debugMessagesLocales = {
         ["ruRU"] = "Информация клиента: ",
         ["enUS"] = true,
     },
-    ["Uncatalogued quest: %s (%s)"] = {
-        ["ruRU"] = "Некаталогизированное задание: %s (%s)",
+    ['Uncatalogued quest: "%s" (%s)'] = {
+        ["ruRU"] = 'Некаталогизированное задание: "%s" (%s)',
         ["enUS"] = true,
     },
-    ["Uncatalogued quest: %s (%s %s)"] = {
-        ["ruRU"] = "Некаталогизированное задание: %s (%s %s)",
+    ['Uncatalogued quest ender: "%s" (%s)'] = {
+        ["ruRU"] = 'Некаталогизированное завершение задания: "%s" (%s)',
         ["enUS"] = true,
     },
-    ["Uncatalogued quest ender: %s (%s %s)"] = {
-        ["ruRU"] = "Некаталогизированное завершение задания: %s (%s %s)",
-        ["enUS"] = true,
-    },
-    ["Creature"] = {
-        ["ruRU"] = "НИП",
-        ["enUS"] = "NPC",
-    },
-    ["GameObject"] = {
-        ["ruRU"] = "Объект",
-        ["enUS"] = "Object",
-    },
-    ["[Migration] Migrated Questie for v9.0. This will reset all Questie settings to default. Journey history has been preserved."] = {
-        ["ruRU"] = "Настройки Questie обновлены по умолчанию. История Путешествия сохранена.",
+    ["[Migration] Settings reset to default. Journey history has been preserved."] = {
+        ["ruRU"] = "Настройки сброшены по умолчанию. История Путешествия сохранена.",
         ["enUS"] = true,
     },
     -- End Debug Offers

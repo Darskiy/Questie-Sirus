@@ -123,7 +123,7 @@ function QuestieCoords:Initialize()
 
     -- Do not fight with Coordinates addon
     if IsAddOnLoaded("Coordinates") and ((Questie.db.profile.minimapCoordinatesEnabled) or (Questie.db.profile.mapCoordinatesEnabled)) then
-        Questie:Print("|cFFFF0000", l10n("WARNING!"), "|r", l10n("Coordinates addon is enabled and will cause buggy behavior. Disabling global map and mini map coordinates. These can be re-enabled in settings"))
+        Questie:Warning(l10n("Coordinates addon is enabled and will cause buggy behavior. Disabling global map and mini map coordinates. These can be re-enabled in settings"))
         Questie.db.profile.minimapCoordinatesEnabled = false
         Questie.db.profile.mapCoordinatesEnabled = false
     end

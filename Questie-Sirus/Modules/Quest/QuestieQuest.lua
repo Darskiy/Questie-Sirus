@@ -62,8 +62,8 @@ local NewThread = ThreadLib.ThreadSimple
 local NOP_FUNCTION = function()
 end
 local ERR_FUNCTION = function(err)
-    print(err)
-    print(debugstack())
+    Questie:Error(err)
+    Questie:Debug(Questie.DEBUG_CRITICAL, debugstack())
 end
 
 -- forward declaration
@@ -281,6 +281,7 @@ end
 
 function QuestieQuest:SmoothReset()
     Questie:Debug(Questie.DEBUG_DEVELOP, "[QuestieQuest:SmoothReset]")
+    Questie:ClearSessionWarnings()
     if QuestieQuest._isResetting then
         QuestieQuest._resetAgain = true
         return
@@ -684,17 +685,8 @@ function QuestieQuest:GetAllQuestIds()
     QuestiePlayer.currentQuestlog = {}
 
     for questId, data in pairs(QuestLogCache.questLog_DO_NOT_MODIFY) do -- DO NOT MODIFY THE RETURNED TABLE
-        if (not QuestieDB.QuestPointers[questId]) then
-            if not Questie._sessionWarnings[questId] then
-                if QuestieCompat.Is335 then
-                    Questie:Info(l10n("Uncatalogued quest: %s (%s)", tostring(data.title or questId), tostring(questId)))
-                elseif not Questie.IsSoD then
-                    Questie:Error(l10n("The quest %s is missing from Questie's database. Please report this on GitHub!", tostring(questId)))
-                else
-                    Questie:Debug(Questie.DEBUG_DEVELOP, "The quest %s is missing from Questie's database", tostring(questId))
-                end
-                Questie._sessionWarnings[questId] = true
-            end
+        if not QuestieDB.QuestPointers[questId] then
+            Questie:LogUncataloguedQuest(questId, data.title)
         else
             --Keep the object in the questlog to save searching
             local quest = QuestieDB.GetQuest(questId)
@@ -843,17 +835,8 @@ function QuestieQuest:GetAllQuestIdsNoObjectives()
     QuestiePlayer.currentQuestlog = {}
 
     for questId, data in pairs(QuestLogCache.questLog_DO_NOT_MODIFY) do -- DO NOT MODIFY THE RETURNED TABLE
-        if (not QuestieDB.QuestPointers[questId]) then
-            if not Questie._sessionWarnings[questId] then
-                if QuestieCompat.Is335 then
-                    Questie:Info(l10n("Uncatalogued quest: %s (%s)", tostring(data.title or questId), tostring(questId)))
-                elseif not Questie.IsSoD then
-                    Questie:Error(l10n("The quest %s is missing from Questie's database. Please report this on GitHub!", tostring(questId)))
-                else
-                    Questie:Debug(Questie.DEBUG_DEVELOP, "The quest %s is missing from Questie's database", tostring(questId))
-                end
-                Questie._sessionWarnings[questId] = true
-            end
+        if not QuestieDB.QuestPointers[questId] then
+            Questie:LogUncataloguedQuest(questId, data.title)
         else
             --Keep the object in the questlog to save searching
             local quest = QuestieDB.GetQuest(questId)

@@ -1029,15 +1029,15 @@ function QuestieTracker:Update()
                             -- Set Timer Title based on states
                             line.label.activeTimer = false
                             if quest.timedBlizzardQuest then
-                                line.label:SetText(Questie:Colorize(l10n("Blizzard Timer Active") .. "!", "blue"))
+                                line.label:SetText(Questie:Colorize(l10n("Blizzard Timer Active") .. "!", Questie.COLORS.BLUE))
                             else
                                 local timeRemainingString, timeRemaining = TrackerQuestTimers:GetRemainingTime(quest, line, false)
                                 if timeRemaining then
                                     if timeRemaining <= 1 then
-                                        line.label:SetText(Questie:Colorize("0 Seconds", "blue"))
+                                        line.label:SetText(Questie:Colorize("0 Seconds", Questie.COLORS.BLUE))
                                         line.label.activeTimer = false
                                     else
-                                        line.label:SetText(Questie:Colorize(timeRemainingString, "blue"))
+                                        line.label:SetText(Questie:Colorize(timeRemainingString, Questie.COLORS.BLUE))
                                         line.label.activeTimer = true
                                     end
                                 end
@@ -1209,9 +1209,9 @@ function QuestieTracker:Update()
                                 end
                             else
                                 if complete == 1 or (#quest.Objectives == 0 and quest.isComplete == true and completionText == nil and complete ~= -1) then
-                                    line.label:SetText(Questie:Colorize(l10n("Quest Complete") .. "!", "green"))
+                                    line.label:SetText(Questie:Colorize(l10n("Quest Complete") .. "!", Questie.COLORS.GREEN))
                                 elseif complete == -1 then
-                                    line.label:SetText(Questie:Colorize(l10n("Quest Failed") .. "!", "red"))
+                                    line.label:SetText(Questie:Colorize(l10n("Quest Failed") .. "!", Questie.COLORS.RED))
                                 end
 
                                 -- Check and measure Objective text width and update tracker width

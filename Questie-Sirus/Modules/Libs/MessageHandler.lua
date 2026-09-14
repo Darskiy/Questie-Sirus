@@ -169,7 +169,7 @@ end
 do
     --? This is the tests for MessageHandlerFactory
     local function RunMessageHandlerTests()
-        Questie:Debug(Questie.DEBUG_CRITICAL, " -- Running " .. Questie:Colorize("MessageHandlerFactory", "yellow") .. " tests --")
+        Questie:Debug(Questie.DEBUG_CRITICAL, " -- Running " .. Questie:Colorize("MessageHandlerFactory", Questie.COLORS.YELLOW) .. " tests --")
         local testEvent = "EVENT_TEST"
 
         --- Test simple usage
@@ -184,29 +184,29 @@ do
             -- Add and fire
             MessageHandler:RegisterRepeating(testEvent, incrementFunction)
             MessageHandler:Fire(testEvent)
-            assert(returnedCount == 1, Questie:Colorize(" -- FAILED: Event was not fired", "red"))
+            assert(returnedCount == 1, Questie:Colorize(" -- FAILED: Event was not fired", Questie.COLORS.RED))
 
             -- Unregister and fire
             MessageHandler:UnregisterRepeating(testEvent, incrementFunction)
             MessageHandler:Fire(testEvent)
-            assert(returnedCount == 1, Questie:Colorize(" -- FAILED: Event was fired after unregistering", "red"))
+            assert(returnedCount == 1, Questie:Colorize(" -- FAILED: Event was fired after unregistering", Questie.COLORS.RED))
 
             -- Register two events and fire
             MessageHandler:RegisterRepeating(testEvent, incrementFunction)
             MessageHandler:RegisterRepeating(testEvent, incrementFunction)
             MessageHandler:Fire(testEvent)
-            assert(returnedCount == 3, Questie:Colorize(" -- FAILED: Event was not fired twice", "red"))
+            assert(returnedCount == 3, Questie:Colorize(" -- FAILED: Event was not fired twice", Questie.COLORS.RED))
 
             -- Unregister all events and fire
             MessageHandler:UnregisterAll(testEvent)
             MessageHandler:Fire(testEvent)
-            assert(returnedCount == 3, Questie:Colorize(" -- FAILED: Event was fired after unregistering all", "red"))
+            assert(returnedCount == 3, Questie:Colorize(" -- FAILED: Event was fired after unregistering all", Questie.COLORS.RED))
 
             -- Register once and fire
             MessageHandler:RegisterOnce(testEvent, incrementFunction)
             MessageHandler:Fire(testEvent)
             MessageHandler:Fire(testEvent)
-            assert(returnedCount == 4, Questie:Colorize(" -- FAILED: Event was not fired once", "red"))
+            assert(returnedCount == 4, Questie:Colorize(" -- FAILED: Event was not fired once", Questie.COLORS.RED))
         end
 
         --- Test multiple registered events
@@ -225,19 +225,19 @@ do
             MessageHandler:RegisterRepeating(testEvent, incrementFunction)
             MessageHandler:RegisterRepeating(testEvent2, incrementFunction2)
             MessageHandler:Fire(testEvent)
-            assert(returnedCount == 1, Questie:Colorize(" -- FAILED: Event 1 was not fired", "red"))
+            assert(returnedCount == 1, Questie:Colorize(" -- FAILED: Event 1 was not fired", Questie.COLORS.RED))
             MessageHandler:Fire(testEvent2)
-            assert(returnedCount == 2, Questie:Colorize(" -- FAILED: Event 2 was not fired", "red"))
+            assert(returnedCount == 2, Questie:Colorize(" -- FAILED: Event 2 was not fired", Questie.COLORS.RED))
 
             -- Unregister and fire
             MessageHandler:UnregisterRepeating(testEvent, incrementFunction)
             MessageHandler:Fire(testEvent)
-            assert(returnedCount == 2, Questie:Colorize(" -- FAILED: Event 1 was fired after unregistering", "red"))
+            assert(returnedCount == 2, Questie:Colorize(" -- FAILED: Event 1 was fired after unregistering", Questie.COLORS.RED))
             MessageHandler:Fire(testEvent2)
-            assert(returnedCount == 3, Questie:Colorize(" -- FAILED: Event 2 was not fired", "red"))
+            assert(returnedCount == 3, Questie:Colorize(" -- FAILED: Event 2 was not fired", Questie.COLORS.RED))
             MessageHandler:UnregisterRepeating(testEvent2, incrementFunction2)
             MessageHandler:Fire(testEvent2)
-            assert(returnedCount == 3, Questie:Colorize(" -- FAILED: Event 2 was fired after unregistering", "red"))
+            assert(returnedCount == 3, Questie:Colorize(" -- FAILED: Event 2 was fired after unregistering", Questie.COLORS.RED))
         end
 
         --- Test return
@@ -254,12 +254,12 @@ do
                 MessageHandler:RegisterRepeating(testEvent, incrementReturnFunction)
             end
             local retVal = MessageHandler:Fire(testEvent)
-            assert(retVal, Questie:Colorize(" -- FAILED: Return value was nil", "red"))
-            assert(retVal[1] == 1, Questie:Colorize(" -- FAILED: 1 Function value was not returned", "red"))
-            assert(retVal[2] == 2, Questie:Colorize(" -- FAILED: 2 Function value was not returned", "red"))
-            assert(retVal[3] == 3, Questie:Colorize(" -- FAILED: 3 Function value was not returned", "red"))
-            assert(retVal[4] == 4, Questie:Colorize(" -- FAILED: 4 Function value was not returned", "red"))
-            assert(retVal[5] == 5, Questie:Colorize(" -- FAILED: 5 Function value was not returned", "red"))
+            assert(retVal, Questie:Colorize(" -- FAILED: Return value was nil", Questie.COLORS.RED))
+            assert(retVal[1] == 1, Questie:Colorize(" -- FAILED: 1 Function value was not returned", Questie.COLORS.RED))
+            assert(retVal[2] == 2, Questie:Colorize(" -- FAILED: 2 Function value was not returned", Questie.COLORS.RED))
+            assert(retVal[3] == 3, Questie:Colorize(" -- FAILED: 3 Function value was not returned", Questie.COLORS.RED))
+            assert(retVal[4] == 4, Questie:Colorize(" -- FAILED: 4 Function value was not returned", Questie.COLORS.RED))
+            assert(retVal[5] == 5, Questie:Colorize(" -- FAILED: 5 Function value was not returned", Questie.COLORS.RED))
         end
 
         --- Test async and async return
@@ -280,24 +280,24 @@ do
             local routine = coroutine.create(
                 function()
                     MessageHandler:FireAsync(testEvent, 2)
-                    assert(returnedCount == 5, Questie:Colorize(" -- FAILED: Event was not fired the correct amount of times", "red"))
+                    assert(returnedCount == 5, Questie:Colorize(" -- FAILED: Event was not fired the correct amount of times", Questie.COLORS.RED))
                 end
             )
             local timer
             timer = C_Timer.NewTicker(0, function()
                 local success, retVal = coroutine.resume(routine)
                 if retVal then
-                    assert(retVal[1] == 1, Questie:Colorize(" -- FAILED: 1 Function value was not returned", "red"))
-                    assert(retVal[2] == 2, Questie:Colorize(" -- FAILED: 2 Function value was not returned", "red"))
-                    assert(retVal[3] == 3, Questie:Colorize(" -- FAILED: 3 Function value was not returned", "red"))
-                    assert(retVal[4] == 4, Questie:Colorize(" -- FAILED: 4 Function value was not returned", "red"))
-                    assert(retVal[5] == 5, Questie:Colorize(" -- FAILED: 5 Function value was not returned", "red"))
+                    assert(retVal[1] == 1, Questie:Colorize(" -- FAILED: 1 Function value was not returned", Questie.COLORS.RED))
+                    assert(retVal[2] == 2, Questie:Colorize(" -- FAILED: 2 Function value was not returned", Questie.COLORS.RED))
+                    assert(retVal[3] == 3, Questie:Colorize(" -- FAILED: 3 Function value was not returned", Questie.COLORS.RED))
+                    assert(retVal[4] == 4, Questie:Colorize(" -- FAILED: 4 Function value was not returned", Questie.COLORS.RED))
+                    assert(retVal[5] == 5, Questie:Colorize(" -- FAILED: 5 Function value was not returned", Questie.COLORS.RED))
                 end
-                assert(success, Questie:Colorize(" -- FAILED: Coroutine failed", "red"), retVal)
+                assert(success, Questie:Colorize(" -- FAILED: Coroutine failed", Questie.COLORS.RED), retVal)
 
                 -- Kill the timer when the coroutine is dead.
                 if (coroutine.status(routine) == "dead") then
-                    Questie:Debug(Questie.DEBUG_CRITICAL, "- MessageHandlerFactory - |cFF00FF00SUCCESS!|r")
+                    Questie:Debug(Questie.DEBUG_CRITICAL, "- MessageHandlerFactory - " .. Questie:Colorize("SUCCESS!", Questie.COLORS.GREEN))
                     timer:Cancel()
                 end
             end)

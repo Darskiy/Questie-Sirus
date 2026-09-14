@@ -152,9 +152,9 @@ _AddQuestStatus = function (quest)
         local stateText
         local questIsComplete = QuestieDB.IsComplete(quest.Id)
         if questIsComplete == 1 then
-            stateText = Questie:Colorize(l10n("Complete"), "green")
+            stateText = Questie:Colorize(l10n("Complete"), Questie.COLORS.GREEN)
         elseif questIsComplete == -1 then
-            stateText = Questie:Colorize(l10n("Failed"), "red")
+            stateText = Questie:Colorize(l10n("Failed"), Questie.COLORS.RED)
         end
 
         if stateText then
@@ -318,11 +318,11 @@ _AddPlayerQuestProgress = function (quest, starterName, starterZoneName, finishe
         else
             if finisherName then
                 _AddTooltipLine(" ")
-                _AddTooltipLine((l10n("Ended by")..": " .. Questie:Colorize(finisherName, "gray")))
+                _AddTooltipLine((l10n("Ended by")..": " .. Questie:Colorize(finisherName, Questie.COLORS.GRAY)))
             end
             if finisherZoneName then
                 _AddTooltipLine(" ")
-                _AddTooltipLine((l10n("Found in")..": " .. Questie:Colorize(finisherZoneName, "gray")))
+                _AddTooltipLine((l10n("Found in")..": " .. Questie:Colorize(finisherZoneName, Questie.COLORS.GRAY)))
             end
         end
     else
@@ -335,7 +335,7 @@ _AddPlayerQuestProgress = function (quest, starterName, starterZoneName, finishe
                         local year = tonumber(date("%Y", Questie.db.char.journey[i].Timestamp))
                         local day = CALENDAR_WEEKDAY_NAMES[ tonumber(date("%w", Questie.db.char.journey[i].Timestamp)) + 1 ]
                         local month = CALENDAR_FULLDATE_MONTH_NAMES[ tonumber(date("%m", Questie.db.char.journey[i].Timestamp)) ]
-                        timestamp = Questie:Colorize(date( "[ "..day ..", ".. month .." %d, "..year.." @ %H:%M ]  " , Questie.db.char.journey[i].Timestamp), "blue")
+                        timestamp = Questie:Colorize(date( "[ "..day ..", ".. month .." %d, "..year.." @ %H:%M ]  " , Questie.db.char.journey[i].Timestamp), Questie.COLORS.BLUE)
                     end
                 end
                 if timestamp then
@@ -348,10 +348,10 @@ _AddPlayerQuestProgress = function (quest, starterName, starterZoneName, finishe
         else
             if starterName then
                 _AddTooltipLine(" ")
-                _AddTooltipLine((l10n("Started by")..": " .. Questie:Colorize(starterName, "gray")))
+                _AddTooltipLine((l10n("Started by")..": " .. Questie:Colorize(starterName, Questie.COLORS.GRAY)))
             end
             if starterZoneName then
-                _AddTooltipLine((l10n("Found in")..": " .. Questie:Colorize(starterZoneName, "gray")))
+                _AddTooltipLine((l10n("Found in")..": " .. Questie:Colorize(starterZoneName, Questie.COLORS.GRAY)))
             end
         end
     end

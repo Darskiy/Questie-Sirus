@@ -86,24 +86,24 @@ function TrackerHeaderFrame.Initialize(baseFrame)
         GameTooltip._owner = self
         GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
         GameTooltip:AddLine("Questie " .. QuestieLib:GetAddonVersionString(), 1, 1, 1)
-        GameTooltip:AddLine(Questie:Colorize(l10n("Left Click") .. ": ", "gray") .. l10n("Toggle Options"))
-        GameTooltip:AddLine(Questie:Colorize(l10n("Right Click") .. ": ", "gray") .. l10n("Toggle My Journey"))
+        GameTooltip:AddLine(Questie:Colorize(l10n("Left Click") .. ": ", Questie.COLORS.GRAY) .. l10n("Toggle Options"))
+        GameTooltip:AddLine(Questie:Colorize(l10n("Right Click") .. ": ", Questie.COLORS.GRAY) .. l10n("Toggle My Journey"))
         GameTooltip:AddLine(" ")
-        GameTooltip:AddLine(Questie:Colorize(l10n("Left Click + Hold") .. ": ", "gray") .. l10n("Drag while Unlocked"))
-        GameTooltip:AddLine(Questie:Colorize(l10n("Ctrl + Left Click + Hold") .. ": ", "gray") .. l10n("Drag while Locked"))
+        GameTooltip:AddLine(Questie:Colorize(l10n("Left Click + Hold") .. ": ", Questie.COLORS.GRAY) .. l10n("Drag while Unlocked"))
+        GameTooltip:AddLine(Questie:Colorize(l10n("Ctrl + Left Click + Hold") .. ": ", Questie.COLORS.GRAY) .. l10n("Drag while Locked"))
 
         local VoiceOver, TomTom = TrackerUtils:IsVoiceOverLoaded(), IsAddOnLoaded("TomTom")
 
         if VoiceOver or TomTom then
             GameTooltip:AddLine(" ")
-            GameTooltip:AddLine(Questie:Colorize(l10n("Questie Tracker Integrations") .. ": ", "gray"))
+            GameTooltip:AddLine(Questie:Colorize(l10n("Questie Tracker Integrations") .. ": ", Questie.COLORS.GRAY))
 
             if VoiceOver then
-                GameTooltip:AddLine(Questie:Colorize(l10n("VoiceOver") .. ": ", "white") .. l10n("Hold shift to see PlayButtons"))
+                GameTooltip:AddLine(Questie:Colorize(l10n("VoiceOver") .. ": ", Questie.COLORS.WHITE) .. l10n("Hold shift to see PlayButtons"))
             end
 
             if TomTom then
-                GameTooltip:AddLine(Questie:Colorize(l10n("TomTom") .. ": ", "white") .. l10n("Ctrl + Left Click or Right Click a Quest Title"))
+                GameTooltip:AddLine(Questie:Colorize(l10n("TomTom") .. ": ", Questie.COLORS.WHITE) .. l10n("Ctrl + Left Click or Right Click a Quest Title"))
             end
         end
 

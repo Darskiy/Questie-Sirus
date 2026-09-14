@@ -147,13 +147,13 @@ function QuestieLib:GetColoredQuestName(questId, showLevel, showState, blizzLike
         local isComplete = QuestieDB.IsComplete(questId)
 
         if isComplete == -1 then
-            name = name .. " " .. Questie:Colorize("(" .. l10n("Failed") .. ")", "red")
+            name = name .. " " .. Questie:Colorize("(" .. l10n("Failed") .. ")", Questie.COLORS.RED)
         elseif isComplete == 1 then
-            name = name .. " " .. Questie:Colorize("(" .. l10n("Complete") .. ")", "green")
+            name = name .. " " .. Questie:Colorize("(" .. l10n("Complete") .. ")", Questie.COLORS.GREEN)
 
         -- Quests treated as complete - zero objectives or synthetic objectives
         elseif isComplete == 0 and QuestieDB.GetQuest(questId).isComplete == true then
-            name = name .. " " .. Questie:Colorize("(" .. l10n("Complete") .. ")", "green")
+            name = name .. " " .. Questie:Colorize("(" .. l10n("Complete") .. ")", Questie.COLORS.GREEN)
         end
     end
 
@@ -756,6 +756,24 @@ function QuestieLib.GetSpawnDistance(spawnA, spawnB)
     local distanceY = y1 - y2
 
     return math_sqrt(distanceX * distanceX + distanceY * distanceY)
+end
+
+local ENTITY_TYPE_LABELS = {
+    ["Quest"] = "Quest",
+    ["Creature"] = "NPC",
+    ["NPC"] = "NPC",
+    ["GameObject"] = "Object",
+    ["Object"] = "Object",
+    ["Item"] = "Item",
+}
+
+--- Formats a unified entity identifier tag in English (e.g. "Quest ID: 21457", "NPC ID: 79906").
+---@param entityType string The unit or entity type ("Quest", "Creature", "NPC", "GameObject", "Object", "Item")
+---@param entityId number|string The numeric or string ID of the entity
+---@return string
+function QuestieLib.GetEntityTag(entityType, entityId)
+    local label = ENTITY_TYPE_LABELS[entityType] or entityType or "Unknown"
+    return label .. " ID: " .. tostring(entityId)
 end
 
 return QuestieLib

@@ -68,9 +68,9 @@ function QuestieOptions.tabs.general:Initialize()
                         type = "description",
                         order = 1.11,
                         name = function()
-                            return Questie:Colorize("Questie-Sirus Edition", "gold") .. " (" .. QuestieLib:GetAddonVersionString() .. ")\n"
-                                .. Questie:Colorize(l10n("Maintained by Darskiy"), "green") .. "\n"
-                                .. Questie:Colorize("https://github.com/Darskiy/Questie-Sirus", "gray") .. "\n"
+                            return Questie:Colorize("Questie-Sirus Edition", Questie.COLORS.GOLD) .. " (" .. QuestieLib:GetAddonVersionString() .. ")\n"
+                                .. Questie:Colorize(l10n("Maintained by Darskiy"), Questie.COLORS.GREEN) .. "\n"
+                                .. Questie:Colorize("https://github.com/Darskiy/Questie-Sirus", Questie.COLORS.GRAY) .. "\n"
                         end,
                     },
                     ignoreRaceFilter = {
@@ -408,7 +408,7 @@ function QuestieOptions.tabs.general:Initialize()
                     level_text = {
                         type = "description",
                         order = 1,
-                        name = function() return Questie:Colorize(l10n('By default, Questie only shows quests that are relevant for your level. You can change this behavior below.'), 'gray'); end,
+                        name = function() return Questie:Colorize(l10n('By default, Questie only shows quests that are relevant for your level. You can change this behavior below.'), Questie.COLORS.GRAY); end,
                         fontSize = "small",
                     },
                     level_spacer = QuestieOptionsUtils:Spacer(2),

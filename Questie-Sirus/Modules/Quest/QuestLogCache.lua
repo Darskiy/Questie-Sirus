@@ -301,7 +301,7 @@ end
 function QuestLogCache.GetQuest(questId)
     -- Fix the issue at function caller side if this error pops up.
     if (not cache[questId]) then
-        Questie:Print(debugstack(1, 20, 4))
+        Questie:Debug(Questie.DEBUG_CRITICAL, debugstack(1, 20, 4))
         Questie:Error("Please report this error. GetQuest: The quest doesn't exist in QuestLogCache.", questId)
         return
     end
@@ -314,7 +314,7 @@ end
 function QuestLogCache.GetQuestObjectives(questId)
     -- Fix the issue at function caller side if this error pops up.
     if (not cache[questId]) then
-        Questie:Print(debugstack(1, 20, 4))
+        Questie:Debug(Questie.DEBUG_CRITICAL, debugstack(1, 20, 4))
         Questie:Error("Please report this error. GetQuestObjectives: The quest doesn't exist in QuestLogCache.", questId)
         return
     end
@@ -328,12 +328,12 @@ end
 ---@param o table @objective
 local function DebugPrintObjective(q, i, o)
     if (o.raw_numFulfilled == o.numFulfilled) and (o.raw_finished == o.finished) then
-        print(" ", i.."/"..#q.objectives..":",
+        Questie:Debug(Questie.DEBUG_DEVELOP, " ", i.."/"..#q.objectives..":",
             o.numFulfilled.."/"..o.numRequired.."="..tostring(o.finished),
             o.type,
             "\""..o.raw_text.."\" \""..o.text.."\"")
     else
-        print(" ", i.."/"..#q.objectives..":",
+        Questie:Debug(Questie.DEBUG_DEVELOP, " ", i.."/"..#q.objectives..":",
             o.raw_numFulfilled.."/"..o.numRequired.."="..tostring(o.raw_finished),
             "FIX:", o.numFulfilled.."/"..o.numRequired.."="..tostring(o.finished),
             o.type,
@@ -343,32 +343,32 @@ end
 
 --- Debug function, prints whole cache
 function QuestLogCache.DebugPrintCache()
-    print("DebugPrintCache", GetTime())
+    Questie:Debug(Questie.DEBUG_DEVELOP, "DebugPrintCache", GetTime())
     local count = 0
     for questId, q in pairs(cache) do
         count = count + 1
-        print("Quest: ("..questId..") \""..q.title.."\" questTag="..tostring(q.questTag) ,"isComplete="..tostring(q.isComplete))
+        Questie:Debug(Questie.DEBUG_DEVELOP, "Quest: ("..questId..") \""..q.title.."\" questTag="..tostring(q.questTag), "isComplete="..tostring(q.isComplete))
         if not next(q.objectives) then
-            print("  no objectives")
+            Questie:Debug(Questie.DEBUG_DEVELOP, "  no objectives")
         else
             for i, o in ipairs(q.objectives) do
                 DebugPrintObjective(q, i, o)
             end
         end
     end
-    print("Total Quests ", count)
+    Questie:Debug(Questie.DEBUG_DEVELOP, "Total Quests ", count)
 end
 
 --- Debug function, prints changes
 function QuestLogCache.DebugPrintCacheChanges(cacheMiss, changes)
     local highlight = ((not cacheMiss) and (not next(changes))) or (cacheMiss and next(changes)) -- highlight untypical cases. they are okey, but sometimes interesting.
-    print("DebugPrintCacheChanges", GetTime(), (highlight and "\124cffFF4444CacheMiss:\124r" or "CacheMiss"), cacheMiss)
+    Questie:Debug(Questie.DEBUG_DEVELOP, "DebugPrintCacheChanges", GetTime(), (highlight and Questie:Colorize("CacheMiss:", Questie.COLORS.RED) or "CacheMiss"), cacheMiss)
 
     for questId, objIndexes in pairs(changes) do
         local q = cache[questId]
-        print("Quest: ("..questId..") \""..q.title.."\" questTag="..tostring(q.questTag) ,"isComplete="..tostring(q.isComplete))
+        Questie:Debug(Questie.DEBUG_DEVELOP, "Quest: ("..questId..") \""..q.title.."\" questTag="..tostring(q.questTag), "isComplete="..tostring(q.isComplete))
         if not next(objIndexes) then
-            print("  no objectives changed (or quest doesn't have objectives)")
+            Questie:Debug(Questie.DEBUG_DEVELOP, "  no objectives changed (or quest doesn't have objectives)")
         else
             for _, i in ipairs(objIndexes) do
                 DebugPrintObjective(q, i, q.objectives[i])

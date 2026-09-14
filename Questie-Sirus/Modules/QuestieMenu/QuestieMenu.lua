@@ -98,10 +98,10 @@ local function toggle(key, forceRemove) -- /run QuestieLoader:ImportModule("Ques
                 if key == "Meeting Stones" then
                     local dungeonName, levelRange = MeetingStones:GetLocalizedDungeonNameAndLevelRangeByObjectId(id)
                     if dungeonName and levelRange then
-                        QuestieMap:ShowObject(id, icon, 1.2, Questie:Colorize(l10n("Meeting Stone"), "white") .. "|n" .. dungeonName .. " " .. levelRange, {}, true, key)
+                        QuestieMap:ShowObject(id, icon, 1.2, Questie:Colorize(l10n("Meeting Stone"), Questie.COLORS.WHITE) .. "|n" .. dungeonName .. " " .. levelRange, {}, true, key)
                     end
                 else
-                    QuestieMap:ShowObject(id, icon, 1.2, Questie:Colorize(l10n(key), "white"), {}, true, key)
+                    QuestieMap:ShowObject(id, icon, 1.2, Questie:Colorize(l10n(key), Questie.COLORS.WHITE), {}, true, key)
                 end
             end
         else
@@ -124,7 +124,7 @@ local function toggle(key, forceRemove) -- /run QuestieLoader:ImportModule("Ques
                         if ((not friendly) or friendly == "AH" or (faction == "Alliance" and friendly == "A") or (faction == "Horde" and friendly == "H")) and (not QuestieCorrections.questNPCBlacklist[id]) then
                             local npcName = QuestieDB.QueryNPCSingle(id, "name") or ("Missing NPC name for " .. tostring(id))
                             local subName = l10n(QuestieDB.QueryNPCSingle(id, "subName") or tostring(key))
-                            local npcTitle = Questie:Colorize(npcName, "white") .. " (" .. subName .. ")"
+                            local npcTitle = Questie:Colorize(npcName, Questie.COLORS.WHITE) .. " (" .. subName .. ")"
                             QuestieMap:ShowNPC(id, icon, 1.2, npcTitle, {}, true, key, true)
                             _spawned[id] = true
                         end
