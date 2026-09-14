@@ -128,6 +128,10 @@ function Questie:Warning(...)
     end
 end
 
+function Questie:Info(...)
+    Questie:Print("|cff00bc32[INFO]|r", ...)
+end
+
 -- Global debug levels
 -- When adding a new level here it MUST be assigned a corresponding number and name in
 -- `debugLevel.values` of QuestieOptionsAdvanced.lua as well as text in Questie:Debug below

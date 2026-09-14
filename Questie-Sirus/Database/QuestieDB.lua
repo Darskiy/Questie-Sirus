@@ -1681,6 +1681,8 @@ function _QuestieDB:HideClassAndRaceQuests()
     Questie:Debug(Questie.DEBUG_DEVELOP, "Other class and race quests hidden");
 end
 
+local _loggedMismatches = {}
+
 -- This function is intended for usage with Gossip and Greeting frames, where there's a list of quests but no QuestIDs are
 -- obtainable until entering the specific quest dialog.
 -- This is a bruteforce method for obtaining a QuestID with no input other than a quest name, and the ID of the questgiver.
@@ -1714,7 +1716,13 @@ function QuestieDB.GetQuestIDFromName(name, questgiverGUID, questStarter)
                         questID = id
                     end
                 end
-            elseif (not Questie.IsSoD) and (not QuestieCompat.Is335) then -- don't print these errors in SoD or on Sirus 3.3.5a, as we expect missing custom data; debug log handles these instead
+            elseif QuestieCompat.Is335 then
+                local mismatchKey = unit_type .. ":" .. tostring(questgiverID) .. ":" .. tostring(name)
+                if not _loggedMismatches[mismatchKey] then
+                    _loggedMismatches[mismatchKey] = true
+                    Questie:Info(l10n("Uncatalogued quest: %s (%s %s)", tostring(name), unit_type, tostring(questgiverID)))
+                end
+            elseif not Questie.IsSoD then
                 Questie:Error(l10n("Database mismatch! No entries found that match quest name. Please report this on GitHub!"))
                 Questie:Error(l10n("Queststarter is: ") .. unit_type .. " " .. tostring(questgiverID))
                 Questie:Error(l10n("Quest name is: ") .. tostring(name))
@@ -1729,7 +1737,13 @@ function QuestieDB.GetQuestIDFromName(name, questgiverGUID, questStarter)
                         questID = id
                     end
                 end
-            elseif (not Questie.IsSoD) and (not QuestieCompat.Is335) then -- don't print these errors in SoD or on Sirus 3.3.5a, as we expect missing custom data; debug log handles these instead
+            elseif QuestieCompat.Is335 then
+                local mismatchKey = unit_type .. ":" .. tostring(questgiverID) .. ":" .. tostring(name)
+                if not _loggedMismatches[mismatchKey] then
+                    _loggedMismatches[mismatchKey] = true
+                    Questie:Info(l10n("Uncatalogued quest ender: %s (%s %s)", tostring(name), unit_type, tostring(questgiverID)))
+                end
+            elseif not Questie.IsSoD then
                 Questie:Error(l10n("Database mismatch! No entries found that match quest name. Please report this on GitHub!"))
                 Questie:Error(l10n("Questender is: ") .. unit_type .. " " .. tostring(questgiverID))
                 Questie:Error(l10n("Quest name is: ") .. tostring(name))

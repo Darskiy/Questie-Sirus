@@ -203,6 +203,18 @@ local debugMessagesLocales = {
         ["ruRU"] = "Информация клиента: ",
         ["enUS"] = true,
     },
+    ["Uncatalogued quest: %s (%s %s)"] = {
+        ["ruRU"] = "Некаталогизированное задание: %s (%s %s)",
+        ["enUS"] = true,
+    },
+    ["Uncatalogued quest ender: %s (%s %s)"] = {
+        ["ruRU"] = "Некаталогизированное завершение задания: %s (%s %s)",
+        ["enUS"] = true,
+    },
+    ["Uncatalogued quest: %s (%s)"] = {
+        ["ruRU"] = "Некаталогизированное задание: %s (%s)",
+        ["enUS"] = true,
+    },
     -- End Debug Offers
 }
 
