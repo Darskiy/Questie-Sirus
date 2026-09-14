@@ -885,40 +885,71 @@ function QuestieMap:GetNearestQuestSpawn(quest)
         return nil
     end
     if quest:IsComplete() == 1 then
-        local finisherSpawns
-        local finisherName
-        if quest.Finisher ~= nil then
-            if quest.Finisher.Type == "monster" then
-                --finisher = QuestieDB:GetNPC(quest.Finisher.Id)
-                finisherSpawns, finisherName = QuestieDB.QueryNPCSingle(quest.Finisher.Id, "spawns"), QuestieDB.QueryNPCSingle(quest.Finisher.Id, "name")
-            elseif quest.Finisher.Type == "object" then
-                --finisher = QuestieDB:GetObject(quest.Finisher.Id)
-                finisherSpawns, finisherName = QuestieDB.QueryObjectSingle(quest.Finisher.Id, "spawns"), QuestieDB.QueryObjectSingle(quest.Finisher.Id, "name")
+        local candidates = {}
+        local seenCandidates = {}
+
+        local function addCandidate(cType, cId)
+            if not cId then return end
+            local cKey = cType .. "_" .. cId
+            if not seenCandidates[cKey] then
+                seenCandidates[cKey] = true
+                candidates[#candidates + 1] = { Type = cType, Id = cId }
             end
         end
-        if finisherSpawns then -- redundant code
-            local bestDistance = 999999999
-            local playerX, playerY, playerI = HBD:GetPlayerWorldPosition()
-            local bestSpawn, bestSpawnZone, bestSpawnType, bestSpawnName
-            for zone, spawns in pairs(finisherSpawns) do
-                for _, spawn in pairs(spawns) do
-                    local uiMapId = ZoneDB:GetUiMapIdByAreaId(zone)
-                    local dX, dY, dInstance = HBD:GetWorldCoordinatesFromZone(spawn[1] / 100.0, spawn[2] / 100.0, uiMapId)
-                    local dist = HBD:GetWorldDistance(dInstance, playerX, playerY, dX, dY)
-                    if dist then
-                        if dInstance ~= playerI then
-                            dist = 500000 + dist * 100 -- hack
-                        end
-                        if dist < bestDistance then
-                            bestDistance = dist
-                            bestSpawn = spawn
-                            bestSpawnZone = zone
-                            bestSpawnType = quest.Finisher.Type
-                            bestSpawnName = finisherName
+
+        if quest.finishedBy then
+            if quest.finishedBy[1] then
+                for _, id in pairs(quest.finishedBy[1]) do
+                    addCandidate("monster", id)
+                end
+            end
+            if quest.finishedBy[2] then
+                for _, id in pairs(quest.finishedBy[2]) do
+                    addCandidate("object", id)
+                end
+            end
+        end
+
+        if #candidates == 0 and quest.Finisher ~= nil then
+            addCandidate(quest.Finisher.Type, quest.Finisher.Id)
+        end
+
+        local bestDistance = 999999999
+        local playerX, playerY, playerI = HBD:GetPlayerWorldPosition()
+        local bestSpawn, bestSpawnZone, bestSpawnType, bestSpawnName
+
+        for _, candidate in ipairs(candidates) do
+            local finisherSpawns, finisherName
+            if candidate.Type == "monster" then
+                finisherSpawns, finisherName = QuestieDB.QueryNPCSingle(candidate.Id, "spawns"), QuestieDB.QueryNPCSingle(candidate.Id, "name")
+            elseif candidate.Type == "object" then
+                finisherSpawns, finisherName = QuestieDB.QueryObjectSingle(candidate.Id, "spawns"), QuestieDB.QueryObjectSingle(candidate.Id, "name")
+            end
+
+            if finisherSpawns then
+                for zone, spawns in pairs(finisherSpawns) do
+                    for _, spawn in pairs(spawns) do
+                        local uiMapId = ZoneDB:GetUiMapIdByAreaId(zone)
+                        local dX, dY, dInstance = HBD:GetWorldCoordinatesFromZone(spawn[1] / 100.0, spawn[2] / 100.0, uiMapId)
+                        local dist = HBD:GetWorldDistance(dInstance, playerX, playerY, dX, dY)
+                        if dist then
+                            if dInstance ~= playerI then
+                                dist = 500000 + dist * 100 -- hack
+                            end
+                            if dist < bestDistance then
+                                bestDistance = dist
+                                bestSpawn = spawn
+                                bestSpawnZone = zone
+                                bestSpawnType = candidate.Type
+                                bestSpawnName = finisherName
+                            end
                         end
                     end
                 end
             end
+        end
+
+        if bestSpawn then
             return bestSpawn, bestSpawnZone, bestSpawnName, bestSpawnType, bestDistance
         end
         return nil

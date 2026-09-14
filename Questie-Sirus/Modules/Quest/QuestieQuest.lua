@@ -949,6 +949,18 @@ function QuestieQuest:AddFinisher(quest)
             else
                 Questie:Debug(Questie.DEBUG_CRITICAL, "[QuestieQuest] Unhandled finisher type:", quest.Finisher.Type, questId, quest.name)
             end
+        elseif quest.finishedBy ~= nil then
+            local finisherId = (quest.finishedBy[1] and quest.finishedBy[1][1])
+            if finisherId then
+                finisher = QuestieDB:GetNPC(finisherId)
+                key = "m_" .. finisherId
+            else
+                finisherId = (quest.finishedBy[2] and quest.finishedBy[2][1])
+                if finisherId then
+                    finisher = QuestieDB:GetObject(finisherId)
+                    key = "o_" .. finisherId
+                end
+            end
         else
             Questie:Debug(Questie.DEBUG_CRITICAL, "[QuestieQuest] Quest has no finisher:", questId, quest.name)
         end
@@ -1467,25 +1479,31 @@ function QuestieQuest:PopulateQuestLogInfo(quest)
     for objectiveIndex, objective in pairs(questObjectives) do
         if objective.type and string.len(objective.type) > 1 then
             if (not quest.ObjectiveData) or (not quest.ObjectiveData[objectiveIndex]) then
-                Questie:Error(l10n("Missing objective data for quest "), quest.Id, " ", objective.text)
-            else
-                if not quest.Objectives[objectiveIndex] then
-                    quest.Objectives[objectiveIndex] = {
-                        Id = quest.ObjectiveData[objectiveIndex].Id,
-                        Index = objectiveIndex,
-                        questId = quest.Id,
-                        _lastUpdate = 0,
-                        Description = objective.text,
-                        spawnList = {},
-                        AlreadySpawned = {},
-                        Update = _QuestieQuest.ObjectiveUpdate,
-                        Coordinates = quest.ObjectiveData[objectiveIndex].Coordinates, -- Only for type "event"
-                        RequiredRepValue = quest.ObjectiveData[objectiveIndex].RequiredRepValue
-                    }
-                end
-
-                quest.Objectives[objectiveIndex]:Update()
+                quest.ObjectiveData = quest.ObjectiveData or {}
+                quest.ObjectiveData[objectiveIndex] = {
+                    Type = objective.type or "event",
+                    Id = 0,
+                    Text = objective.text,
+                    Coordinates = nil,
+                }
             end
+
+            if not quest.Objectives[objectiveIndex] then
+                quest.Objectives[objectiveIndex] = {
+                    Id = quest.ObjectiveData[objectiveIndex].Id,
+                    Index = objectiveIndex,
+                    questId = quest.Id,
+                    _lastUpdate = 0,
+                    Description = objective.text,
+                    spawnList = {},
+                    AlreadySpawned = {},
+                    Update = _QuestieQuest.ObjectiveUpdate,
+                    Coordinates = quest.ObjectiveData[objectiveIndex].Coordinates, -- Only for type "event"
+                    RequiredRepValue = quest.ObjectiveData[objectiveIndex].RequiredRepValue
+                }
+            end
+
+            quest.Objectives[objectiveIndex]:Update()
         end
 
         if (not quest.Objectives[objectiveIndex]) or (not quest.Objectives[objectiveIndex].Id) then
@@ -1517,7 +1535,7 @@ function QuestieQuest:PopulateQuestLogInfo(quest)
         end
     end
 
-    if #quest.Objectives == 0 and #quest.SpecialObjectives == 0 and ((quest.triggerEnd and #quest.triggerEnd > 0) or (quest.Finisher and quest.Finisher.Id ~= nil)) then
+    if #quest.Objectives == 0 and #quest.SpecialObjectives == 0 and ((quest.triggerEnd and #quest.triggerEnd > 0) or (quest.Finisher and quest.Finisher.Id ~= nil) or (quest.finishedBy and ((quest.finishedBy[1] and #quest.finishedBy[1] > 0) or (quest.finishedBy[2] and #quest.finishedBy[2] > 0)))) then
         -- Some quests when picked up will be flagged isComplete == 0 but the quest.Objective table or quest.SpecialObjectives table is nil. This
         -- check assumes the Quest should have been flagged questLogEngtry.isComplete == 1. We're specifically looking for a quest.triggerEnd or
         -- a quest.Finisher.Id because this might throw an error if there is nothing to populate when we call QuestieQuest:AddFinisher().

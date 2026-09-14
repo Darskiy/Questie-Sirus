@@ -50,6 +50,14 @@ QuestieCompat.frame = CreateFrame("Frame")
 QuestieCompat.frame:RegisterEvent("ADDON_LOADED")
 QuestieCompat.frame:RegisterEvent("PLAYER_LOGIN")
 QuestieCompat.frame:RegisterEvent("PLAYER_LOGOUT")
+QuestieCompat.frame:RegisterEvent("CHAT_MSG_ADDON")
+pcall(QuestieCompat.frame.RegisterEvent, QuestieCompat.frame, "QUEST_COMPLETED")
+if RegisterAddonMessagePrefix then
+    pcall(RegisterAddonMessagePrefix, "ASMSG_Q_C")
+end
+if C_ChatInfo and C_ChatInfo.RegisterAddonMessagePrefix then
+    pcall(C_ChatInfo.RegisterAddonMessagePrefix, "ASMSG_Q_C")
+end
 QuestieCompat.frame:SetScript("OnEvent", function(self, event, ...)
     if QuestieCompat[event] then
         QuestieCompat[event](self, event, ...)
@@ -678,11 +686,35 @@ function QuestieCompat:QUEST_QUERY_COMPLETE(event)
     end
 end
 
+local serverCompletedQuests = {}
+
 -- https://wowpedia.fandom.com/wiki/API_IsQuestFlaggedCompleted
 -- Determine if a quest has been completed.
 function QuestieCompat.IsQuestFlaggedCompleted(questID)
-	return Questie.db.char.complete[questID] or false
+    local numericQuestId = tonumber(questID)
+    if not numericQuestId then
+        return false
+    end
+
+    if Questie.db and Questie.db.char and Questie.db.char.complete and Questie.db.char.complete[numericQuestId] then
+        return true
+    end
+
+    if serverCompletedQuests and serverCompletedQuests[numericQuestId] then
+        return true
+    end
+
+    local isQuestCompleted = _G.IsQuestCompleted or rawget(_G, "IsQuestCompleted")
+    if type(isQuestCompleted) == "function" then
+        local success, completed = pcall(isQuestCompleted, numericQuestId)
+        if success and completed then
+            return true
+        end
+    end
+
+    return false
 end
+QuestieCompat.C_QuestLog.IsQuestFlaggedCompleted = QuestieCompat.IsQuestFlaggedCompleted
 
 ---Returns the available quests at a quest giver.
 -- https://wowpedia.fandom.com/wiki/API_GetGossipAvailableQuests
@@ -1499,9 +1531,72 @@ function QuestieCompat:CHAT_MSG_SYSTEM(event, message)
     end
 end
 
+local function OnSirusQuestCompleted(questId)
+    local numericQuestId = tonumber(questId)
+    if not numericQuestId or numericQuestId <= 0 then
+        return
+    end
+
+    serverCompletedQuests[numericQuestId] = true
+    if Questie.db and Questie.db.char and Questie.db.char.complete then
+        Questie.db.char.complete[numericQuestId] = true
+    end
+
+    if QuestiePlayer and QuestiePlayer.currentQuestlog then
+        QuestiePlayer.currentQuestlog[numericQuestId] = nil
+    end
+
+    if _QuestEventHandler and _QuestEventHandler.QuestTurnedIn then
+        pcall(_QuestEventHandler.QuestTurnedIn, _QuestEventHandler, numericQuestId)
+    end
+    if _QuestEventHandler and _QuestEventHandler.QuestRemoved then
+        pcall(_QuestEventHandler.QuestRemoved, _QuestEventHandler, numericQuestId)
+    end
+
+    if Questie.started then
+        if QuestieQuest and QuestieQuest.CalculateAndDrawQuests then
+            QuestieQuest:CalculateAndDrawQuests()
+        elseif AvailableQuests and AvailableQuests.CalculateAndDrawAll then
+            AvailableQuests.CalculateAndDrawAll()
+        end
+    end
+end
+QuestieCompat.OnSirusQuestCompleted = OnSirusQuestCompleted
+
+function QuestieCompat:CHAT_MSG_ADDON(event, prefix, msg, channel, sender)
+    if event == "ASMSG_Q_C" and prefix and not msg then
+        msg = prefix
+        prefix = event
+    end
+    if prefix == "ASMSG_Q_C" and msg then
+        local questId = tonumber(msg) or (type(msg) == "string" and tonumber(msg:match("(%d+)")))
+        if questId then
+            OnSirusQuestCompleted(questId)
+        end
+    end
+end
+
+function QuestieCompat:QUEST_COMPLETED(event, questId, ...)
+    if type(event) == "number" and not questId then
+        questId = event
+    end
+    local numericQuestId = tonumber(questId) or (type(questId) == "string" and tonumber(questId:match("(%d+)")))
+    if numericQuestId then
+        OnSirusQuestCompleted(numericQuestId)
+    end
+end
+
 function QuestieCompat.QuestEventHandler_RegisterEvents()
     QuestieCompat.frame:RegisterEvent("QUEST_QUERY_COMPLETE")
     QuestieCompat.frame:RegisterEvent("CHAT_MSG_SYSTEM")
+    QuestieCompat.frame:RegisterEvent("CHAT_MSG_ADDON")
+    pcall(QuestieCompat.frame.RegisterEvent, QuestieCompat.frame, "QUEST_COMPLETED")
+    if RegisterAddonMessagePrefix then
+        pcall(RegisterAddonMessagePrefix, "ASMSG_Q_C")
+    end
+    if C_ChatInfo and C_ChatInfo.RegisterAddonMessagePrefix then
+        pcall(C_ChatInfo.RegisterAddonMessagePrefix, "ASMSG_Q_C")
+    end
 
     -- https://wowpedia.fandom.com/wiki/PLAYER_INTERACTION_MANAGER_FRAME_HIDE
     QuestieQuestEventFrame:UnregisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")

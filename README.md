@@ -9,6 +9,7 @@ WoW Sirus adaptation of [Questie](https://github.com/Questie/Questie), based on 
 - **Custom Nameplates**: Defensive FontString resolution across ElvUI, Kui_Nameplates, TidyPlates, and Aloft.
 - **Custom & Allied Races**: Full 32-bit bitmask and dynamic faction support for all 27 Sirus playable races (up to 2^26), Journey search integration, neutral Pandaren/Vulpera, and displaced NPC races (IDs 43–52).
 - **Custom Zones & Maps**: DBC-extracted boundary metrics and map projections for Tol'Garod, Gilneas, Lost Island, Tel'Abim, Norderon, and Exile's Reach.
+- **Quest Completion Protocol**: In-game listener for Sirus's `ASMSG_Q_C` server opcode, client completion hooks, dynamic fallback objective synthesis, and multi-phase quest enders.
 
 ## Installation
 
