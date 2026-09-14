@@ -18,13 +18,17 @@ local GetQuestLogIndexByID = QuestieCompat.GetQuestLogIndexByID
 
 local LSM30 = LibStub("LibSharedMedia-3.0")
 
-local WatchFrame = QuestTimerFrame or WatchFrame
+local function _GetWatchFrame()
+    return ObjectiveTrackerFrame or QuestTimerFrame or WatchFrame
+end
 local blizzardTimerLocation = {}
 local timer
 
 -- Save the default location of the Blizzard QuestTimerFrame
 if not (Questie.IsWotlk or QuestieCompat.Is335) then
-    blizzardTimerLocation = { QuestTimerFrame:GetPoint() }
+    if QuestTimerFrame then
+        blizzardTimerLocation = { QuestTimerFrame:GetPoint() }
+    end
 end
 
 function TrackerQuestTimers:Initialize()
@@ -35,50 +39,57 @@ function TrackerQuestTimers:Initialize()
     end
 
     -- All Classic expansions
-    WatchFrame:HookScript("OnShow", function()
-        if Questie.db.profile.showBlizzardQuestTimer then
-            TrackerQuestTimers:ShowBlizzardTimer()
-        else
-            TrackerQuestTimers:HideBlizzardTimer()
-        end
-    end)
-
-    -- Pre-Classic WotLK
-    if not (Questie.IsWotlk or QuestieCompat.Is335) then
-        local timeElapsed = 0
-
-        WatchFrame:HookScript("OnUpdate", function(_, elapsed)
-            timeElapsed = timeElapsed + elapsed
-            if timeElapsed > 1 then
-                TrackerQuestTimers:UpdateTimerFrame()
-                timeElapsed = 0
+    local watchFrame = _GetWatchFrame()
+    if watchFrame then
+        watchFrame:HookScript("OnShow", function()
+            if Questie.db.profile.showBlizzardQuestTimer then
+                TrackerQuestTimers:ShowBlizzardTimer()
+            else
+                TrackerQuestTimers:HideBlizzardTimer()
             end
         end)
+
+        -- Pre-Classic WotLK
+        if not (Questie.IsWotlk or QuestieCompat.Is335) then
+            local timeElapsed = 0
+
+            watchFrame:HookScript("OnUpdate", function(_, elapsed)
+                timeElapsed = timeElapsed + elapsed
+                if timeElapsed > 1 then
+                    TrackerQuestTimers:UpdateTimerFrame()
+                    timeElapsed = 0
+                end
+            end)
+        end
     end
 end
 
 function TrackerQuestTimers:HideBlizzardTimer()
+    local watchFrame = _GetWatchFrame()
+    if not watchFrame then return end
     if Questie.IsWotlk or QuestieCompat.Is335 then
         -- Classic WotLK
-        WatchFrame:Hide()
+        watchFrame:Hide()
     else
         -- Classic WoW: This moves the QuestTimerFrame off screen. A faux Hide().
         -- Otherwise, if the frame is hidden then the OnUpdate doesn't work.
-        WatchFrame:ClearAllPoints()
-        WatchFrame:SetPoint("TOP", "UIParent", -10000, -10000)
+        watchFrame:ClearAllPoints()
+        watchFrame:SetPoint("TOP", "UIParent", -10000, -10000)
     end
 end
 
 function TrackerQuestTimers:ShowBlizzardTimer()
+    local watchFrame = _GetWatchFrame()
+    if not watchFrame then return end
     if Questie.IsWotlk or QuestieCompat.Is335 then
         -- Classic WotLK
-        WatchFrame:Show()
+        watchFrame:Show()
     else
         -- Classic WoW: This moves the QuestTimerFrame
         -- back its default location. A faux Show()
         if blizzardTimerLocation[1] then
-            WatchFrame:ClearAllPoints()
-            WatchFrame:SetPoint(unpack(blizzardTimerLocation))
+            watchFrame:ClearAllPoints()
+            watchFrame:SetPoint(unpack(blizzardTimerLocation))
         end
     end
 end

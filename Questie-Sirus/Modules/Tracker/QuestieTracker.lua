@@ -47,6 +47,7 @@ local C_Timer = QuestieCompat.C_Timer
 local GetQuestLogTitle = QuestieCompat.GetQuestLogTitle
 local GetQuestLogIndexByID = QuestieCompat.GetQuestLogIndexByID
 local GetItemInfo = QuestieCompat.GetItemInfo
+local UpdateWatchFrame = QuestieCompat.UpdateWatchFrame
 
 local LSM30 = LibStub("LibSharedMedia-3.0")
 
@@ -245,7 +246,11 @@ function QuestieTracker.Initialize()
                 end
 
                 trackedAchievements = { GetTrackedAchievements() }
-                WatchFrame_Update()
+                if UpdateWatchFrame then
+                    UpdateWatchFrame()
+                elseif WatchFrame_Update then
+                    WatchFrame_Update()
+                end
 
                 -- Sync and populate QuestieTrackers achievement cache
                 if Questie.db.char.trackedAchievementIds ~= trackedAchievementIds then

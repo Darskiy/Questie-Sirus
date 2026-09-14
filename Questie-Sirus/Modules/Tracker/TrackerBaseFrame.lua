@@ -19,7 +19,7 @@ local l10n = QuestieLoader:ImportModule("l10n")
 local C_Timer = QuestieCompat.C_Timer
 local BackdropTemplateMixin = not QuestieCompat.Is335 and BackdropTemplateMixin
 
-local WatchFrame = QuestWatchFrame or WatchFrame
+local WatchFrame = ObjectiveTrackerFrame or QuestWatchFrame or WatchFrame
 local baseFrame, sizer, sizerSetPoint, sizerSetPointY, sizerLine1, sizerLine2, sizerLine3
 local updateTimer
 

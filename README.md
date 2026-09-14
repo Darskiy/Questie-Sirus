@@ -2,6 +2,10 @@
 
 WoW Sirus adaptation of [Questie](https://github.com/Questie/Questie), based on [widxwer's 3.3.5a backport](https://github.com/widxwer/Questie).
 
+## Sirus Compatibility & Features
+
+- **Dragonflight UI Support**: Seamless cascading integration with Sirus's backported `ObjectiveTrackerFrame` and legacy watch frames.
+
 ## Installation
 
 1. Download or clone this repository.
