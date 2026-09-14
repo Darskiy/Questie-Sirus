@@ -215,8 +215,20 @@ local debugMessagesLocales = {
         ["ruRU"] = "Некаталогизированное задание: %s (%s)",
         ["enUS"] = true,
     },
+    ["Uncatalogued quest: %s (Quest %s)"] = {
+        ["ruRU"] = "Некаталогизированное задание: %s (Квест %s)",
+        ["enUS"] = true,
+    },
+    ["Creature"] = {
+        ["ruRU"] = "НИП",
+        ["enUS"] = "NPC",
+    },
+    ["GameObject"] = {
+        ["ruRU"] = "Объект",
+        ["enUS"] = "Object",
+    },
     ["[Migration] Migrated Questie for v9.0. This will reset all Questie settings to default. Journey history has been preserved."] = {
-        ["ruRU"] = "[Миграция] Questie обновлен до v9.0. Настройки сброшены по умолчанию. История Путешествия сохранена.",
+        ["ruRU"] = "[Миграция] Настройки Questie обновлены по умолчанию. История Путешествия сохранена.",
         ["enUS"] = true,
     },
     -- End Debug Offers
