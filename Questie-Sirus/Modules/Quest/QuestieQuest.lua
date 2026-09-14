@@ -687,7 +687,7 @@ function QuestieQuest:GetAllQuestIds()
         if (not QuestieDB.QuestPointers[questId]) then
             if not Questie._sessionWarnings[questId] then
                 if QuestieCompat.Is335 then
-                    Questie:Info(l10n("Uncatalogued quest: %s (Quest %s)", tostring(data.title or questId), tostring(questId)))
+                    Questie:Info(l10n("Uncatalogued quest: %s", tostring(data.title or questId)))
                 elseif not Questie.IsSoD then
                     Questie:Error(l10n("The quest %s is missing from Questie's database. Please report this on GitHub!", tostring(questId)))
                 else
@@ -846,7 +846,7 @@ function QuestieQuest:GetAllQuestIdsNoObjectives()
         if (not QuestieDB.QuestPointers[questId]) then
             if not Questie._sessionWarnings[questId] then
                 if QuestieCompat.Is335 then
-                    Questie:Info(l10n("Uncatalogued quest: %s (Quest %s)", tostring(data.title or questId), tostring(questId)))
+                    Questie:Info(l10n("Uncatalogued quest: %s", tostring(data.title or questId)))
                 elseif not Questie.IsSoD then
                     Questie:Error(l10n("The quest %s is missing from Questie's database. Please report this on GitHub!", tostring(questId)))
                 else

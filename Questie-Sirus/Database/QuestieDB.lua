@@ -1720,8 +1720,7 @@ function QuestieDB.GetQuestIDFromName(name, questgiverGUID, questStarter)
                 local mismatchKey = unit_type .. ":" .. tostring(questgiverID) .. ":" .. tostring(name)
                 if not _loggedMismatches[mismatchKey] then
                     _loggedMismatches[mismatchKey] = true
-                    local unitTypeDisplay = l10n(unit_type)
-                    Questie:Info(l10n("Uncatalogued quest: %s (%s %s)", tostring(name), unitTypeDisplay, tostring(questgiverID)))
+                    Questie:Info(l10n("Uncatalogued quest: %s", tostring(name)))
                 end
             elseif not Questie.IsSoD then
                 Questie:Error(l10n("Database mismatch! No entries found that match quest name. Please report this on GitHub!"))
@@ -1742,8 +1741,7 @@ function QuestieDB.GetQuestIDFromName(name, questgiverGUID, questStarter)
                 local mismatchKey = unit_type .. ":" .. tostring(questgiverID) .. ":" .. tostring(name)
                 if not _loggedMismatches[mismatchKey] then
                     _loggedMismatches[mismatchKey] = true
-                    local unitTypeDisplay = l10n(unit_type)
-                    Questie:Info(l10n("Uncatalogued quest ender: %s (%s %s)", tostring(name), unitTypeDisplay, tostring(questgiverID)))
+                    Questie:Info(l10n("Uncatalogued quest ender: %s", tostring(name)))
                 end
             elseif not Questie.IsSoD then
                 Questie:Error(l10n("Database mismatch! No entries found that match quest name. Please report this on GitHub!"))

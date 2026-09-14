@@ -91,7 +91,7 @@ local debugMessagesLocales = {
         ["enUS"] = true,
     },
     ["Initializing townfolks"] = {
-        ["ruRU"] = "Инициализация полезных объектов и NPC (ремонт, почтовый ящик и т.п.)",
+        ["ruRU"] = "Инициализация полезных объектов и NPC",
         ["enUS"] = true,
     },
     ["Optimizing waypoints"] = {
@@ -203,20 +203,28 @@ local debugMessagesLocales = {
         ["ruRU"] = "Информация клиента: ",
         ["enUS"] = true,
     },
+    ["Uncatalogued quest: %s"] = {
+        ["ruRU"] = "Некаталогизированное задание: %s",
+        ["enUS"] = true,
+    },
+    ["Uncatalogued quest ender: %s"] = {
+        ["ruRU"] = "Некаталогизированное завершение задания: %s",
+        ["enUS"] = true,
+    },
     ["Uncatalogued quest: %s (%s %s)"] = {
-        ["ruRU"] = "Некаталогизированное задание: %s (%s %s)",
+        ["ruRU"] = "Некаталогизированное задание: %s",
         ["enUS"] = true,
     },
     ["Uncatalogued quest ender: %s (%s %s)"] = {
-        ["ruRU"] = "Некаталогизированное завершение задания: %s (%s %s)",
+        ["ruRU"] = "Некаталогизированное завершение задания: %s",
         ["enUS"] = true,
     },
     ["Uncatalogued quest: %s (%s)"] = {
-        ["ruRU"] = "Некаталогизированное задание: %s (%s)",
+        ["ruRU"] = "Некаталогизированное задание: %s",
         ["enUS"] = true,
     },
     ["Uncatalogued quest: %s (Quest %s)"] = {
-        ["ruRU"] = "Некаталогизированное задание: %s (Квест %s)",
+        ["ruRU"] = "Некаталогизированное задание: %s",
         ["enUS"] = true,
     },
     ["Creature"] = {
@@ -228,7 +236,7 @@ local debugMessagesLocales = {
         ["enUS"] = "Object",
     },
     ["[Migration] Migrated Questie for v9.0. This will reset all Questie settings to default. Journey history has been preserved."] = {
-        ["ruRU"] = "[Миграция] Настройки Questie обновлены по умолчанию. История Путешествия сохранена.",
+        ["ruRU"] = "Настройки Questie обновлены по умолчанию. История Путешествия сохранена.",
         ["enUS"] = true,
     },
     -- End Debug Offers
