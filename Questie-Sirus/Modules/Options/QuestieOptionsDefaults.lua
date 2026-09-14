@@ -194,6 +194,9 @@ function QuestieOptionsDefaults:Load()
             },
             journey = {},
             isTrackerExpanded = true,
+            custom_race_override = false,
+            mapped_race = nil,
+            sirus_ignore_race_filter = false,
         },
         global = {
             -- TBC Isle of Quel'Danas

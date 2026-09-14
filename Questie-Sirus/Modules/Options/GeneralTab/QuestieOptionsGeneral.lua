@@ -3,10 +3,14 @@
 -------------------------
 ---@type QuestieQuest
 local QuestieQuest = QuestieLoader:ImportModule("QuestieQuest");
+---@type QuestieDB
+local QuestieDB = QuestieLoader:ImportModule("QuestieDB");
 ---@type QuestieOptions
 local QuestieOptions = QuestieLoader:ImportModule("QuestieOptions");
 ---@type QuestieOptionsDefaults
 local QuestieOptionsDefaults = QuestieLoader:ImportModule("QuestieOptionsDefaults");
+---@type QuestieLib
+local QuestieLib = QuestieLoader:ImportModule("QuestieLib");
 ---@type QuestieOptionsUtils
 local QuestieOptionsUtils = QuestieLoader:ImportModule("QuestieOptionsUtils");
 ---@type QuestiePlayer
@@ -33,6 +37,7 @@ local AvailableQuests = QuestieLoader:ImportModule("AvailableQuests")
 QuestieOptions.tabs.general = { ... }
 local optionsDefaults = QuestieOptionsDefaults:Load()
 
+local _GetStandardRaces
 local _GetAnnounceChannels
 local _IsAnnounceDisabled
 local _GetQuestSoundChoices
@@ -52,6 +57,94 @@ function QuestieOptions.tabs.general:Initialize()
                 type = "header",
                 order = 1,
                 name = function() return l10n('General Options'); end,
+            },
+            sirus_options = {
+                type = "group",
+                order = 1.1,
+                inline = true,
+                name = function() return l10n('Sirus Options'); end,
+                args = {
+                    sirusHeader = {
+                        type = "description",
+                        order = 1.11,
+                        name = function()
+                            return Questie:Colorize("Questie-Sirus Edition", "gold") .. " (" .. QuestieLib:GetAddonVersionString() .. ")\n"
+                                .. Questie:Colorize("Maintained by Darskiy", "green") .. "\n"
+                                .. Questie:Colorize("https://github.com/Darskiy/Questie-Sirus", "gray") .. "\n"
+                        end,
+                    },
+                    ignoreRaceFilter = {
+                        type = "toggle",
+                        order = 1.15,
+                        name = function() return l10n('Show quests for all races'); end,
+                        desc = function() return l10n('Disable race requirement filtering, showing all available quests regardless of race.'); end,
+                        descStyle = "inline",
+                        disabled = function() return false end,
+                        width = 2,
+                        get = function(info)
+                            local _ignore = Questie.db.char.sirus_ignore_race_filter
+                            return _ignore or false
+                        end,
+                        set = function (info, value)
+                            Questie.db.char.sirus_ignore_race_filter = value
+                            if QuestieDB.ResetRaceCache then
+                                QuestieDB.ResetRaceCache()
+                            end
+                            QuestieQuest:SmoothReset()
+                        end,
+                    },
+                    enableCustomRaceOverride = {
+                        type = "toggle",
+                        order = 1.2,
+                        name = function() return l10n('Enable custom race override'); end,
+                        desc = function() return l10n('Enable overriding custom race to one of standard races.'); end,
+                        descStyle = "inline",
+                        disabled = function() return false end,
+                        width = 2,
+                        get = function(info)
+                            local _enabled = Questie.db.char.custom_race_override
+                            return _enabled or false
+                        end,
+                        set = function (info, value)
+                            Questie.db.char.custom_race_override = value
+                            if QuestieDB.ResetRaceCache then
+                                QuestieDB.ResetRaceCache()
+                            end
+                            QuestieQuest:SmoothReset()
+                        end,
+                    },
+                    mappingRace = {
+                        type = "select",
+                        order = 1.3,
+                        values = _GetStandardRaces,
+                        style = 'dropdown',
+                        disabled = function()
+                            local _enabled = Questie.db.char.custom_race_override
+                            return not _enabled
+                        end,
+                        name = function() return l10n('Mapping race'); end,
+                        desc = function() return l10n('Questie will use this race instead of the custom race for this character.'); end,
+                        get = function(info) return Questie.db.char.mapped_race; end,
+                        set = function (info, value)
+                            Questie.db.char.mapped_race = value
+                            if QuestieDB.ResetRaceCache then
+                                QuestieDB.ResetRaceCache()
+                            end
+                            QuestieQuest:SmoothReset()
+                        end,
+                    },
+                    Spacer_F = QuestieOptionsUtils:Spacer(1.4),
+                    reloadUI = {
+                        type = "execute",
+                        order = 1.5,
+                        name = function() return l10n('Reload UI'); end,
+                        desc = function() return l10n('After changing race you should reload UI.'); end,
+                        disabled = function() return false end,
+                        func = function (_, _)
+                            ReloadUI()
+                        end,
+                    },
+                },
             },
             social_spacer = QuestieOptionsUtils:Spacer(1.5,nil,"minimal"),
             social_options_group = {
@@ -759,4 +852,21 @@ _GetObjectiveProgressSoundChoicesSort = function()
         tinsert(sorting, "Short Circuit")
     end
     return sorting
+end
+
+_GetStandardRaces = function()
+    return {
+        [1] = l10n("Human (Alliance)"),
+        [3] = l10n("Dwarf (Alliance)"),
+        [4] = l10n("Night Elf (Alliance)"),
+        [7] = l10n("Gnome (Alliance)"),
+        [11] = l10n("Draenei (Alliance)"),
+        [12] = l10n("Worgen (Alliance)"),
+        [2] = l10n("Orc (Horde)"),
+        [5] = l10n("Undead (Horde)"),
+        [6] = l10n("Tauren (Horde)"),
+        [8] = l10n("Troll (Horde)"),
+        [9] = l10n("Goblin (Horde)"),
+        [10] = l10n("Blood Elf (Horde)"),
+    }
 end

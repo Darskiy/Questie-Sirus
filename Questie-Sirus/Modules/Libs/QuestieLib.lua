@@ -349,7 +349,23 @@ function QuestieLib:GetRaceString(raceMask)
             l10n('Troll'),
             l10n('Goblin'),
             l10n('Blood Elf'),
-            l10n('Draenei')
+            l10n('Draenei'),
+            l10n('Worgen'),
+            l10n('Naga'),
+            l10n('Pandaren'),
+            l10n('High Elf'),
+            l10n('Pandaren'),
+            l10n('Nightborne'),
+            l10n('Void Elf'),
+            l10n('Vulpera'),
+            l10n('Vulpera'),
+            l10n('Vulpera'),
+            l10n('Pandaren'),
+            l10n('Zandalari Troll'),
+            l10n('Lightforged Draenei'),
+            l10n('Eredar'),
+            l10n('Dark Iron Dwarf'),
+            l10n('Dracthyr'),
         }
         local firstRun = true
         for k, v in pairs(raceTable) do
@@ -359,7 +375,8 @@ function QuestieLib:GetRaceString(raceMask)
                 else
                     raceString = raceString .. ", "
                 end
-                raceString = raceString .. stringTable[k]
+                local raceName = stringTable[k] or ("Race " .. tostring(k))
+                raceString = raceString .. raceName
             end
         end
         return raceString
@@ -498,7 +515,7 @@ end
 
 function QuestieLib:UnpackBinary(val)
     local ret = {}
-    for q = 0, 16 do
+    for q = 0, 31 do
         if bit.band(bit.rshift(val, q), 1) == 1 then
             tinsert(ret, true)
         else

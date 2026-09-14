@@ -310,6 +310,12 @@ function QuestieDB:Initialize()
     Questiedbcharhidden = Questie.db.char.hidden
 end
 
+function QuestieDB.ResetRaceCache()
+    if checkRace then
+        wipe(checkRace)
+    end
+end
+
 function QuestieDB:GetObject(objectId)
     if not objectId then
         return nil

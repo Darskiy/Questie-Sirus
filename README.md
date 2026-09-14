@@ -7,6 +7,7 @@ WoW Sirus adaptation of [Questie](https://github.com/Questie/Questie), based on 
 - **Dragonflight UI Support**: Seamless cascading integration with Sirus's backported `ObjectiveTrackerFrame` and legacy watch frames.
 - **Strict Chat Link Validation**: Compliant with server-side `ChatStrictLinkChecking >= 1` (standard quest links that never drop in chat).
 - **Custom Nameplates**: Defensive FontString resolution across ElvUI, Kui_Nameplates, TidyPlates, and Aloft.
+- **Custom & Allied Races**: Full 32-bit bitmask and dynamic faction support for all 27 Sirus playable races (up to 2^26), Journey search integration, neutral Pandaren/Vulpera, and displaced NPC races (IDs 43–52).
 
 ## Installation
 

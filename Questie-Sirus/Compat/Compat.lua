@@ -51,7 +51,9 @@ QuestieCompat.frame:RegisterEvent("ADDON_LOADED")
 QuestieCompat.frame:RegisterEvent("PLAYER_LOGIN")
 QuestieCompat.frame:RegisterEvent("PLAYER_LOGOUT")
 QuestieCompat.frame:SetScript("OnEvent", function(self, event, ...)
-    QuestieCompat[event](self, event, ...)
+    if QuestieCompat[event] then
+        QuestieCompat[event](self, event, ...)
+    end
 end)
 
 -- current expansion level (https://wowpedia.fandom.com/wiki/WOW_PROJECT_ID)
@@ -98,22 +100,37 @@ QuestieCompat.ChrRaces = {
 	Dwarf = 3,
 	NightElf = 4,
 	Scourge = 5,
+	Undead = 5,
 	Tauren = 6,
 	Gnome = 7,
 	Troll = 8,
 	Goblin = 9,
 	BloodElf = 10,
 	Draenei = 11,
-	FelOrc = 12,
-	Naga_ = 13,
-	Broken = 14,
-	Skeleton = 15,
-	Vrykul = 16,
-	Tuskarr = 17,
-	ForestTroll = 18,
-	Taunka = 19,
-	NorthrendSkeleton = 20,
-	IceTroll = 21,
+	Worgen = 12,
+	Naga = 13,
+	Queldo = 15,
+	HighElf = 15,
+	Pandaren = 16,
+	Nightborne = 17,
+	VoidElf = 18,
+	Vulpera = 19,
+	ZandalariTroll = 23,
+	Lightforged = 24,
+	Eredar = 25,
+	DarkIronDwarf = 26,
+	Dracthyr = 27,
+	-- Displaced Blizzard NPC races (shifted to 43-52 in Sirus DBC)
+	FelOrc = 43,
+	Naga_ = 44,
+	Broken = 45,
+	Skeleton = 46,
+	Vrykul = 47,
+	Tuskarr = 48,
+	ForestTroll = 49,
+	Taunka = 50,
+	NorthrendSkeleton = 51,
+	IceTroll = 52,
 }
 
 -- https://wago.tools/db2/ChrClasses?build=3.4.3.52237
@@ -127,6 +144,7 @@ QuestieCompat.ChrClasses = {
 	SHAMAN = 7,
 	MAGE = 8,
 	WARLOCK = 9,
+	DEMONHUNTER = 10,
 	DRUID = 11,
 }
 
@@ -365,6 +383,45 @@ function QuestieCompat.GetServerTime()
     }
 
     return time(currentDate), currentDate
+end
+
+-- Returns the race of the unit.
+-- https://wowpedia.fandom.com/wiki/API_UnitRace
+function QuestieCompat.UnitRace(unit)
+    local raceName, raceFile = UnitRace(unit)
+    local raceId = nil
+    if raceFile then
+        if raceFile == "Vulpera" then
+            local faction = UnitFactionGroup(unit)
+            if faction == "Horde" then
+                raceId = 20
+            elseif faction == "Alliance" then
+                raceId = 19
+            else
+                raceId = 21 -- Vulpera (Neutral DBC ID 21)
+            end
+        elseif raceFile == "Pandaren" then
+            local faction = UnitFactionGroup(unit)
+            if faction == "Horde" then
+                raceId = 16
+            elseif faction == "Alliance" then
+                raceId = 14
+            else
+                raceId = 22 -- Pandaren (Neutral DBC ID 22)
+            end
+        else
+            raceId = QuestieCompat.ChrRaces[raceFile]
+        end
+    end
+    return raceName, raceFile, raceId
+end
+
+-- Returns the class of the unit.
+-- https://wowpedia.fandom.com/wiki/API_UnitClass
+-- Patch 5.0.4 (2012-08-28): Added classId return value.
+function QuestieCompat.UnitClass(unit)
+    local className, classFile = UnitClass(unit)
+    return className, classFile, QuestieCompat.ChrClasses[classFile]
 end
 
 local questObjectivesCache = {}
@@ -745,20 +802,6 @@ function QuestieCompat.UnitBuff(unit, index)
     return name, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId
 end
 
--- Returns the race of the unit.
--- https://wowpedia.fandom.com/wiki/API_UnitRace
-function QuestieCompat.UnitRace(unit)
-    local raceName, raceFile = UnitRace(unit)
-    return raceName, raceFile, QuestieCompat.ChrRaces[raceFile]
-end
-
--- Returns the class of the unit.
--- https://wowpedia.fandom.com/wiki/API_UnitClass
--- Patch 5.0.4 (2012-08-28): Added classId return value.
-function QuestieCompat.UnitClass(unit)
-    local className, classFile = UnitClass(unit)
-    return className, classFile, QuestieCompat.ChrClasses[classFile]
-end
 
 -- Returns info for a faction.
 -- https://wowpedia.fandom.com/wiki/API_GetFactionInfo
@@ -1749,6 +1792,37 @@ function QuestieCompat:ADDON_LOADED(event, addon)
             weekly = {},
         }
     })
+
+    -- Invalidate compiled database binary cache if Sirus content corrections changed
+    local currentSirusVersion = QuestieCompat.sirusDataVersion
+    if currentSirusVersion and Questie.db and Questie.db.global and Questie.db.global.sirusDataVersion ~= currentSirusVersion then
+        Questie.db.global.dbIsCompiled = false
+        Questie.db.global.sirusDataVersion = currentSirusVersion
+    end
+
+    -- Invalidate compiled database binary cache if engine schema changed (e.g. requiredRaces u16 -> u32)
+    local SIRUS_SCHEMA_VERSION = 2
+    if Questie.db and Questie.db.global and Questie.db.global.sirusSchemaVersion ~= SIRUS_SCHEMA_VERSION then
+        Questie.db.global.dbIsCompiled = false
+        Questie.db.global.sirusSchemaVersion = SIRUS_SCHEMA_VERSION
+    end
+
+    if QuestieDB and QuestieDB.raceKeys then
+        QuestieDB.raceKeys.GOBLIN = 256
+        QuestieDB.raceKeys.WORGEN = 2048
+        QuestieDB.raceKeys.PANDAREN_ALLIANCE = 8192
+        QuestieDB.raceKeys.HIGH_ELF = 16384
+        QuestieDB.raceKeys.PANDAREN_HORDE = 32768
+        QuestieDB.raceKeys.NIGHTBORNE = 65536
+        QuestieDB.raceKeys.VOID_ELF = 131072
+        QuestieDB.raceKeys.VULPERA_ALLIANCE = 262144
+        QuestieDB.raceKeys.VULPERA_HORDE = 524288
+        QuestieDB.raceKeys.ZANDALARI_TROLL = 4194304
+        QuestieDB.raceKeys.LIGHTFORGED_DRAENEI = 8388608
+        QuestieDB.raceKeys.EREDAR = 16777216
+        QuestieDB.raceKeys.DARK_IRON_DWARF = 33554432
+        QuestieDB.raceKeys.DRACTHYR = 67108864
+    end
 
     QuestieCompat.LoadUiMapData(Questie.db.profile.useWotlkMapData and QuestieCompat.WOW_PROJECT_WRATH_CLASSIC)
 

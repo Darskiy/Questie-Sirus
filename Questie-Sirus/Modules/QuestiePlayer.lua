@@ -34,15 +34,46 @@ local math_max = math.max;
 
 QuestiePlayer.numberOfGroupMembers = 0
 
+local function getPlayerRaceFlag()
+    local _, raceFile, raceId = UnitRace("player")
+
+    if Questie.db and Questie.db.char and Questie.db.char.custom_race_override then
+        local mappedRace = Questie.db.char.mapped_race
+        if mappedRace and mappedRace > 0 and mappedRace <= 32 then
+            playerRaceId = mappedRace
+            return 2 ^ (playerRaceId - 1)
+        end
+    end
+
+    if raceId and raceId > 0 and raceId <= 32 then
+        playerRaceId = raceId
+        return 2 ^ (playerRaceId - 1)
+    end
+
+    if raceFile and QuestieCompat.ChrRaces and QuestieCompat.ChrRaces[raceFile] then
+        playerRaceId = QuestieCompat.ChrRaces[raceFile]
+        return 2 ^ (playerRaceId - 1)
+    end
+
+    -- Sirus custom allied races fallback based on faction
+    QuestiePlayer.faction = QuestiePlayer.faction or UnitFactionGroup("player")
+    if QuestiePlayer.faction == "Alliance" then
+        playerRaceId = 1 -- Human (Alliance)
+    else
+        playerRaceId = 2 -- Orc (Horde)
+    end
+    return 2 ^ (playerRaceId - 1)
+end
+
 function QuestiePlayer:Initialize()
     _QuestiePlayer.playerLevel = UnitLevel("player")
+    QuestiePlayer.faction = UnitFactionGroup("player")
 
-    playerRaceId = select(3, UnitRace("player"))
-    playerRaceFlag = 2 ^ (playerRaceId - 1)
+    playerRaceFlag = getPlayerRaceFlag()
     playerRaceFlagX2 = 2 * playerRaceFlag
 
     playerClassName = select(1, UnitClass("player"))
-    local classId = select(3, UnitClass("player"))
+    local classId = select(3, UnitClass("player")) or 1
     playerClassFlag = 2 ^ (classId - 1)
     playerClassFlagX2 = 2 * playerClassFlag
 end
@@ -93,8 +124,27 @@ end
 
 ---@return boolean
 function QuestiePlayer.HasRequiredRace(requiredRaces)
+    if Questie.db and Questie.db.char and Questie.db.char.sirus_ignore_race_filter then
+        return true
+    end
+    if (not requiredRaces) or (requiredRaces == 0) then
+        return true
+    end
+
+    -- Support generic faction quests (ALL_HORDE = 690 or 178, ALL_ALLIANCE = 1101 or 77)
+    QuestiePlayer.faction = QuestiePlayer.faction or UnitFactionGroup("player")
+    if (requiredRaces == 690 or requiredRaces == 178) and QuestiePlayer.faction == "Horde" then
+        return true
+    end
+    if (requiredRaces == 1101 or requiredRaces == 77) and QuestiePlayer.faction == "Alliance" then
+        return true
+    end
+
     -- test a bit flag: (value % (2*flag) >= flag)
-    return (not requiredRaces) or (requiredRaces == 0) or ((requiredRaces % playerRaceFlagX2) >= playerRaceFlag)
+    if playerRaceFlag and playerRaceFlag > 0 and playerRaceFlagX2 then
+        return ((requiredRaces % playerRaceFlagX2) >= playerRaceFlag)
+    end
+    return false
 end
 
 ---@return boolean
