@@ -68,7 +68,11 @@ local bindTruthTable = {
     ['disabled'] = function() return false end,
 }
 
-local _QuestLogScrollBar = QuestLogScrollFrameScrollBar or QuestLogListScrollFrame.ScrollBar or QuestLogListScrollFrameScrollBar
+local function getQuestLogScrollBar()
+    return QuestLogScrollFrameScrollBar
+        or (QuestLogListScrollFrame and QuestLogListScrollFrame.ScrollBar)
+        or QuestLogListScrollFrameScrollBar
+end
 
 ---@param quest table The table provided by QuestieDB.GetQuest(questId)
 function TrackerUtils:ShowQuestLog(quest)
@@ -79,8 +83,11 @@ function TrackerUtils:ShowQuestLog(quest)
     SelectQuestLogEntry(questLogIndex)
 
     -- Scroll to the quest in the quest log
-    local scrollSteps = _QuestLogScrollBar:GetValueStep()
-    _QuestLogScrollBar:SetValue(questLogIndex * scrollSteps - scrollSteps * 3)
+    local scrollBar = getQuestLogScrollBar()
+    if scrollBar and scrollBar.GetValueStep and scrollBar.SetValue then
+        local scrollSteps = scrollBar:GetValueStep()
+        scrollBar:SetValue(questLogIndex * scrollSteps - scrollSteps * 3)
+    end
 
     if not questFrame:IsShown() then
         if not InCombatLockdown() then
@@ -378,15 +385,42 @@ local function GetZoneNameByIDFallback(zoneId)
         return zoneCache[zoneId]
     end
 
-    if zoneId <= 0 or type(zoneId) ~= "number" then
+    if (not zoneId) or type(zoneId) ~= "number" or zoneId == 0 then
         return "Unknown Zone"
     end
 
-    for _, zone in pairs(l10n.zoneLookup) do
-        if zone[zoneId] then
-            zoneCache[zoneId] = zone[zoneId]
-            return zoneCache[zoneId]
+    local rawName
+
+    if l10n.zoneCategoryLookup then
+        for _, category in pairs(l10n.zoneCategoryLookup) do
+            if type(category) == "table" and category[zoneId] then
+                rawName = category[zoneId]
+                break
+            end
         end
+    end
+
+    if (not rawName) and l10n.zoneLookup then
+        for _, zone in pairs(l10n.zoneLookup) do
+            if type(zone) == "table" and zone[zoneId] then
+                rawName = zone[zoneId]
+                break
+            end
+        end
+    end
+
+    if (not rawName) and ZoneDB and ZoneDB.private and ZoneDB.private.dungeons and ZoneDB.private.dungeons[zoneId] then
+        local dungeonEntry = ZoneDB.private.dungeons[zoneId]
+        if type(dungeonEntry) == "table" then
+            rawName = dungeonEntry[1]
+        elseif type(dungeonEntry) == "string" then
+            rawName = dungeonEntry
+        end
+    end
+
+    if rawName then
+        zoneCache[zoneId] = l10n(rawName)
+        return zoneCache[zoneId]
     end
 
     Questie:Debug(Questie.DEBUG_CRITICAL, "[GetZoneNameByIDFallback]: Unable to find a zone name for zoneId", zoneId)

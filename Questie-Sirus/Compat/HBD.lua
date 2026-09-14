@@ -102,6 +102,7 @@ function HBD:GetPlayerWorldPosition()
     local x, y, uiMapID = HBD:GetPlayerZonePosition()
     if not x or not y then return nil, nil, nil end
 
+    local instanceID
     x, y, instanceID = HBD:GetWorldCoordinatesFromZone(x, y, uiMapID)
     if x and y then
         return x, y, instanceID
@@ -833,7 +834,7 @@ function pins:RemoveWorldMapIcon(ref, icon)
     end
     icon:Hide()
     icon:ClearAllPoints()
-    icon:SetParent(UiParent)
+    icon:SetParent(UIParent)
 end
 
 --- Remove all worldmap icons belonging to your addon (as tracked by "ref")
@@ -845,7 +846,7 @@ function pins:RemoveAllWorldMapIcons(ref)
         worldmapPins[icon] = nil
         icon:Hide()
         icon:ClearAllPoints()
-        icon:SetParent(UiParent)
+        icon:SetParent(UIParent)
     end
     wipe(worldmapPinRegistry[ref])
 end

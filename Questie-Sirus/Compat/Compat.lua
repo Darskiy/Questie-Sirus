@@ -45,6 +45,20 @@ QuestieCompat.addonName = ...
 QuestieCompat.NOOP = function() end
 QuestieCompat.NOOP_MT = {__index = function() return QuestieCompat.NOOP end}
 
+if not _G.DevTools_Dump then
+    local function DevTools_Dump_Fallback(...)
+        if _G.UIParentLoadAddOn and _G.UIParentLoadAddOn("Blizzard_DebugTools") and _G.DevTools_Dump and _G.DevTools_Dump ~= DevTools_Dump_Fallback then
+            return _G.DevTools_Dump(...)
+        end
+        if _G.Questie and _G.Questie.Debug then
+            _G.Questie:Debug(_G.Questie.DEBUG_CRITICAL, "[DevTools_Dump Fallback]", ...)
+        elseif print then
+            print("[DevTools_Dump Fallback]", ...)
+        end
+    end
+    _G.DevTools_Dump = DevTools_Dump_Fallback
+end
+
 -- events handler
 QuestieCompat.frame = CreateFrame("Frame")
 QuestieCompat.frame:RegisterEvent("ADDON_LOADED")
@@ -331,7 +345,11 @@ QuestieCompat.WorldMapFrame = {
     end,
     GetMapID = QuestieCompat.GetCurrentUiMapID,
     SetMapID = function(self, UiMapID)
-        local mapID = QuestieCompat.UiMapData[UiMapID].mapID
+        local mapData = QuestieCompat.UiMapData and QuestieCompat.UiMapData[UiMapID]
+        if not (mapData and mapData.mapID) then
+            return
+        end
+        local mapID = mapData.mapID
         local mapLevel = QuestieCompat.Round(mapID%1 * 10)
 
         SetMapByID(math.floor(mapID) - 1)
@@ -348,7 +366,7 @@ QuestieCompat.C_Calendar = {
     -- Returns information about the calendar month by offset.
 	-- https://wowpedia.fandom.com/wiki/API_C_Calendar.GetMonthInfo
 	GetMonthInfo = function(offsetMonths)
-		local month, year, numdays, firstday = CalendarGetMonth(offsetMonth);
+		local month, year, numdays, firstday = CalendarGetMonth(offsetMonths or 0);
 		return {
 			month = month,
 			year = year,
@@ -379,6 +397,9 @@ QuestieCompat.C_DateAndTime = {
 -- https://wowpedia.fandom.com/wiki/API_GetServerTime
 function QuestieCompat.GetServerTime()
     local weekday, month, day, year = CalendarGetDate()
+    if not year then
+        return time(), date("*t")
+    end
 	local hours, minutes = GetGameTime()
 
     local currentDate = {
@@ -570,15 +591,20 @@ function QuestieCompat.CalculateNextResetTime()
     local timeUntilReset = GetQuestResetTime()
 
     Questie:Debug(Questie.DEBUG_DEVELOP, "[CalculateNextResetTime] GetQuestResetTime: ", timeUntilReset)
-    if timeUntilReset <= 0 then
-        Questie:Error("GetQuestResetTime() returns an invalid value: "..timeUntilReset..". Please report on Github!")
-        return
+    if (not timeUntilReset) or timeUntilReset <= 0 then
+        if (not timeUntilReset) or (timeUntilReset % 86400 == 0) then
+            timeUntilReset = 86400
+        else
+            timeUntilReset = timeUntilReset % 86400
+        end
+        Questie:Debug(Questie.DEBUG_DEVELOP, "[CalculateNextResetTime] Clock desync detected, adjusted timeUntilReset: ", timeUntilReset)
     end
     Questie.db.profile.dailyResetTime = Questie.db.profile.dailyResetTime or (currentTime + timeUntilReset)
     Questie:Debug(Questie.DEBUG_DEVELOP, "[CalculateNextResetTime] Next daily rest time: ", date("%m/%d/%y %H:%M:%S", Questie.db.profile.dailyResetTime))
 
-    Questie.db.profile.weeklyResetHour = Questie.db.profile.weeklyResetHour or tonumber(date("%H", Questie.db.profile.dailyResetTime+300))
-    local dayOffset = (Questie.db.profile.weeklyResetDay - currentDate.weekday + 7) % 7
+    Questie.db.profile.weeklyResetHour = Questie.db.profile.weeklyResetHour or tonumber(date("%H", Questie.db.profile.dailyResetTime+300)) or 6
+    local weeklyResetDay = Questie.db.profile.weeklyResetDay or 4
+    local dayOffset = (weeklyResetDay - currentDate.weekday + 7) % 7
     if dayOffset == 0 and currentDate.hour >= Questie.db.profile.weeklyResetHour then
         dayOffset = 7
     end
@@ -595,7 +621,11 @@ end
 function QuestieCompat.ResetDailyQuests(reset)
     local currentTime = QuestieCompat.GetServerTime()
 
-    if reset or (currentTime > Questie.db.profile.dailyResetTime) then
+    if not Questie.db.profile.dailyResetTime then
+        QuestieCompat.CalculateNextResetTime()
+    end
+
+    if reset or (Questie.db.profile.dailyResetTime and currentTime > Questie.db.profile.dailyResetTime) then
         for questId in pairs(Questie.db.char.daily) do
             Questie.db.char.daily[questId] = nil
             Questie.db.char.complete[questId] = nil
@@ -610,6 +640,13 @@ end
 
 local weeklyResetTimer
 function QuestieCompat.ResetWeeklyQuests()
+    if not Questie.db.profile.weeklyResetTime then
+        QuestieCompat.CalculateNextResetTime()
+        if not Questie.db.profile.weeklyResetTime then
+            return
+        end
+    end
+
     local currentTime = QuestieCompat.GetServerTime()
     local timeUntilReset = Questie.db.profile.weeklyResetTime - currentTime
 
@@ -776,7 +813,7 @@ end
 -- Returns the ID of the displayed quest at a quest giver.
 -- https://wowpedia.fandom.com/wiki/API_GetQuestID
 function QuestieCompat.GetQuestID(questStarter, title)
-    local title = title or GetTitleText()
+    title = title or GetTitleText()
     local guid = QuestieCompat.UnitGUID("npc")
 
 	return QuestieDB.GetQuestIDFromName(title, guid, questStarter)
@@ -833,7 +870,6 @@ function QuestieCompat.UnitBuff(unit, index)
         unitCaster, isStealable, shouldConsolidate, spellId = UnitBuff(unit, index)
     return name, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId
 end
-
 
 -- Returns info for a faction.
 -- https://wowpedia.fandom.com/wiki/API_GetFactionInfo
@@ -1235,20 +1271,26 @@ function QuestieCompat._writeByte(self, val)
 end
 
 function QuestieCompat._readByte(self)
-	local subIndex = math.ceil(self._pointer / MAX_TABLE_SIZE)
-	local index = self._pointer - (subIndex - 1) * MAX_TABLE_SIZE
-
-    self._pointer = self._pointer + 1
-
-	return self._bin[subIndex][index]
+    local p = self._pointer
+    self._pointer = p + 1
+    local bin = self._bin
+    if type(bin[1]) ~= "table" then
+        return bin[p]
+    end
+    local subIndex = math.ceil(p / MAX_TABLE_SIZE)
+    local index = p - (subIndex - 1) * MAX_TABLE_SIZE
+    return bin[subIndex] and bin[subIndex][index]
 end
 
 function QuestieCompat.Save(self)
-	local result = ""
-	for i=1, #self._bin do
-		result = result .. table.concat(self._bin[i])
-	end
-	return result
+    if type(self._bin[1]) ~= "table" then
+        return table.concat(self._bin)
+    end
+    local result = ""
+    for i=1, #self._bin do
+        result = result .. table.concat(self._bin[i])
+    end
+    return result
 end
 
 local _QuestieNameplate = QuestieNameplate.private
@@ -1631,7 +1673,7 @@ function QuestieCompat.QuestEventHandler_RegisterEvents()
     QuestieQuestEventFrame:UnregisterEvent("QUEST_REMOVED")
     hooksecurefunc("AbandonQuest", function()
         local questId = QuestieCompat.abandonQuestID or select(9, GetQuestLogTitle(GetQuestLogSelection()))
-        _QuestEventHandler:QuestRemoved(QuestieCompat.abandonQuestID)
+        _QuestEventHandler:QuestRemoved(questId)
     end)
 end
 
